@@ -91,7 +91,7 @@ class EmotionLabeler(QMainWindow):
         qtRectangle.moveCenter(centerpoint)
 
         #WINDOW TITLE
-        self.setWindowTitle("LabelFace")
+        self.setWindowTitle("FaceLabeler")
         self.setWindowIcon(QIcon("data/Icon.png"))
 
 
