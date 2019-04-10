@@ -90,7 +90,7 @@ class EmotionLabeler(QMainWindow):
 
         self.resize(*self.MainWindowSize)
         qtRectangle = self.frameGeometry()
-        #self.createMenu()
+        self.createMenu()
         centerpoint = QDesktopWidget().availableGeometry().center()
         qtRectangle.moveCenter(centerpoint)
 

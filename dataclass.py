@@ -15,7 +15,6 @@ class SaveData:
         self.labelConfigPath = labelConfig
         self.faceImg = None
 
-
         with open(labelConfig, 'r+') as csvfile:
             reader = csv.reader(csvfile, delimiter=",")
             for row in reader:
@@ -35,6 +34,10 @@ class SaveData:
                     self.labelCount = {}
         else:
             self.labelCount = Counter()
+
+        for key in self.labels:
+            if key not in self.labelCount:
+                self.labelCount[key] = 0
 
         if not os.path.isdir(self.imageDir):
             os.mkdir(self.imageDir)
@@ -60,7 +63,9 @@ class SaveData:
                 csvFileWriter.writerow([filename,self.currentLabel])
                 self.imageIndex += 1
                 self.faceImg = None
+
                 self.labelCount[self.currentLabel] += 1
+
         else:
             print("No Face Image")
 
