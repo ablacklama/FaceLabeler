@@ -169,8 +169,17 @@ class EmotionLabeler(QMainWindow):
 
 if __name__ == '__main__':
     PID = os.getpid()
-    app = QApplication(sys.argv)
-    ex = EmotionLabeler()
-    signal.signal(signal.SIGTERM, app.exec_())
-    os.kill(PID, signal.SIGTERM)
+
+    try:
+        app = QApplication(sys.argv)
+        ex = EmotionLabeler()
+        signal.signal(signal.SIGTERM, app.exec_())
+        os.kill(PID, signal.SIGTERM)
+    except Exception as e:
+        error_dialog = QErrorMessage()
+        error_dialog.showMessage(str(e))
+        signal.signal(signal.SIGTERM, app.exec_())
+        raise (e)
+        os.kill(PID, signal.SIGTERM)
+
     sys.exit()

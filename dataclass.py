@@ -16,10 +16,12 @@ class SaveData:
         self.faceImg = None
 
 
-        with open(labelConfig) as csvfile:
+        with open(labelConfig, 'r+') as csvfile:
             reader = csv.reader(csvfile, delimiter=",")
             for row in reader:
                 self.labels.append(row[1])
+
+
         self.labels = np.array(self.labels)
         self.currentLabel = self.labels[0]
 
