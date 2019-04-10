@@ -1,4 +1,0 @@
-add error messages in app
-put settings in settings menu
-add capture of full image
-add customizable directory
