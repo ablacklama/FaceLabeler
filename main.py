@@ -14,13 +14,17 @@ import signal
 
 class EmotionLabeler(QMainWindow):
     def __init__(self):
-        super().__init__()
-        self.MainWindowSize = [900,580]
-        self.LabelTrackerSize = [640,200]
-        self.videoRunning = None
-        self.PhotoData = SharedData()
-        self.saver = SaveData(self.PhotoData)
-        self.initUI()
+        try:
+            super().__init__()
+            self.MainWindowSize = [900,580]
+            self.LabelTrackerSize = [640,200]
+            self.videoRunning = None
+            self.PhotoData = SharedData()
+            self.saver = SaveData(self.PhotoData)
+            self.initUI()
+        except Exception as e:
+            handle_error(e)
+            raise(e)
 
     def setImage(self, image):
         self.videoFeed.setPixmap(QPixmap.fromImage(image))
@@ -92,7 +96,7 @@ class EmotionLabeler(QMainWindow):
 
         #WINDOW TITLE
         self.setWindowTitle("FaceLabeler")
-        self.setWindowIcon(QIcon("data/Icon.png"))
+        self.setWindowIcon(QIcon("data/icon.ico"))
 
 
         #FACE DETECTION
@@ -162,7 +166,18 @@ class EmotionLabeler(QMainWindow):
 
         self.show()
 
-
+def handle_error(error):
+    error_box = QMessageBox()
+    error_box.setIcon(QMessageBox.Critical)
+    error_box.setWindowIcon(QIcon("icon.ico"))
+    error_box.setWindowTitle("Fetal Error")
+    error_box.setText('A critical error occurred. Select the details to display it.')
+    error_box.setInformativeText("If you think this is a bug, please report it to "
+                                 "<a href=https://github.com/ablacklama/FaceLabeler/issues/new>the owner's GitHub</a>")
+    error_box.setTextFormat(Qt.RichText)
+    error_box.setDetailedText(str(error))
+    error_box.setTextInteractionFlags(Qt.TextSelectableByMouse)
+    error_box.exec()
 
 
 
@@ -176,9 +191,6 @@ if __name__ == '__main__':
         signal.signal(signal.SIGTERM, app.exec_())
         os.kill(PID, signal.SIGTERM)
     except Exception as e:
-        error_dialog = QErrorMessage()
-        error_dialog.showMessage(str(e))
-        signal.signal(signal.SIGTERM, app.exec_())
         raise (e)
         os.kill(PID, signal.SIGTERM)
 
