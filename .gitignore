@@ -90,3 +90,7 @@ ENV/
 
 data/Images/*
 .idea/
+dist/
+*.spec
+*.exe
+*.ico

@@ -6,8 +6,8 @@ from collections import Counter
 
 
 class SaveData:
-    def __init__(self, PhotoData, labelConfig="data/labelConfig.csv", labelList="data/faceLabels.csv"):
-        self.imageDir = "data/Images"
+    def __init__(self, PhotoData, labelConfig="data/labelConfig.csv", labelList="data/faceLabels.csv", imageDir="data/Images"):
+        self.imageDir = imageDir
         self.labels = []
         self.imageIndex = 0
         self.PhotoData = PhotoData
@@ -33,6 +33,9 @@ class SaveData:
                     self.labelCount = {}
         else:
             self.labelCount = Counter()
+
+        if not os.path.isdir(self.imageDir):
+            os.mkdir(self.imageDir)
 
         #print(self.labelCount, self.imageIndex)
 
