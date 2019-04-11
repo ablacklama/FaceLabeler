@@ -23,9 +23,7 @@ class VideoThread(QThread):
                 rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 self.PhotoData.set_photo(rgb_image)
                 p = QImage(rgb_image.data, rgb_image.shape[1], rgb_image.shape[0], QImage.Format_RGB888)
-                #p = convert_to_qt_format.scaled(640, 480, Qt.KeepAspectRatio)
                 self.changePixmap.emit(p)
-            #time.sleep(.1)
 
     def __del__(self):
         self.cap.release()
