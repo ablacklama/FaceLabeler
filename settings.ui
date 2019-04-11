@@ -143,6 +143,19 @@
     <string>Restore Defaults</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="refreshButton">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>230</y>
+     <width>75</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>refresh</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

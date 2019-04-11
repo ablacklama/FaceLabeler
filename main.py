@@ -185,14 +185,14 @@ class EmotionLabeler(QMainWindow):
         self.show()
 
 
-# Set CloseEvent to change paths of data/saver
-# Set eachbutton so that when it's changed it checks if that's a valid path.
+
 class settingsWindow(QDialog):
     reloadsignal = pyqtSignal(bool)
     def __init__(self, parent,):
         super(settingsWindow, self).__init__(parent)
         loadUi('settings.ui',self)
         self.parent = parent
+        self.refreshButton.clicked.connect(self.loadText)
         self.saveButton.clicked.connect(lambda: self.reload(False))
         self.restoreDefaultsButton.clicked.connect(lambda: self.reload(True))
 
