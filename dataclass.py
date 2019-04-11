@@ -46,6 +46,10 @@ class SaveData:
         if not os.path.isdir(self.imageDir):
             os.mkdir(self.imageDir)
 
+    def get_paths(self):
+        return [self.imageDir,
+        self.labelListPath,
+        self.labelConfigPath]
 
     def set_face_image(self,image):
         self.faceImg = image

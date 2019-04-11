@@ -88,7 +88,7 @@ class EmotionLabeler(QMainWindow):
             self.CapAndSaveShortcut.activated.disconnect()
 
     def settingsMenu(self):
-        self.setWin = settingsWindow(self,self.MainWindowSize)
+        self.setWin = settingsWindow(self)
         self.setWin.reloadsignal.connect(self.reloadSaver)
         self.setWin.show()
 
@@ -175,10 +175,10 @@ class EmotionLabeler(QMainWindow):
 
 
         #CAP AND SAVE SHORTCUT
-        self.CapShortcutBox = QCheckBox("Space to Cap/Save", self)
+        self.CapShortcutBox = QCheckBox("Cap/Save shortcut on", self)
         self.CapShortcutBox.stateChanged.connect(self.capShortcutToggle)
         self.CapShortcutBox.move(700, 240)
-        self.CapShortcutBox.resize(120,15)
+        self.CapShortcutBox.resize(125,15)
         self.CapAndSaveShortcut = QShortcut(QKeySequence("Space"),self)
 
 
@@ -189,14 +189,22 @@ class EmotionLabeler(QMainWindow):
 # Set eachbutton so that when it's changed it checks if that's a valid path.
 class settingsWindow(QDialog):
     reloadsignal = pyqtSignal(bool)
-    def __init__(self, parent, size):
+    def __init__(self, parent,):
         super(settingsWindow, self).__init__(parent)
         loadUi('settings.ui',self)
-        self.saveButton.clicked.connect(lambda: self.reloadsignal.emit(False))
-        self.restoreDefaultsButton.clicked.connect(lambda: self.reloadsignal.emit(True))
+        self.parent = parent
+        self.saveButton.clicked.connect(lambda: self.reload(False))
+        self.restoreDefaultsButton.clicked.connect(lambda: self.reload(True))
 
-    def closeEvent(self, QCloseEvent):
-        self.reloadsignal.emit(False)
+    def loadText(self):
+        self.imageDir.setText(self.parent.saver.imageDir)
+        self.labelListPath.setText(self.parent.saver.labelListPath)
+        self.labelConfigPath.setText(self.parent.saver.labelConfigPath)
+
+    def reload(self, defaults):
+        self.reloadsignal.emit(defaults)
+        self.loadText()
+
 
 
 
