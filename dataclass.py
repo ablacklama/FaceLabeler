@@ -8,14 +8,16 @@ from collections import Counter
 class SaveData:
     def __init__(self, PhotoData):
         self.PhotoData = PhotoData
-        self._init()
+        self._init("data/Images",
+                   "data/faceLabels.csv",
+                   "data/labelConfig.csv")
 
-    def _init(self):
-        self.imageDir = "data/Images"
+    def _init(self,imageDir, labelListPath, labelConfigPath):
+        self.imageDir = imageDir
         self.labels = []
         self.imageIndex = 0
-        self.labelListPath = "data/faceLabels.csv"
-        self.labelConfigPath = "data/labelConfig.csv"
+        self.labelListPath = labelListPath
+        self.labelConfigPath = labelConfigPath
         self.faceImg = None
 
         with open(self.labelConfigPath, 'r+') as csvfile:

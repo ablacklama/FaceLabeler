@@ -54,7 +54,7 @@ class EmotionLabeler(QMainWindow):
 
     def createMenu(self):
         self.mainMenu = self.menuBar()
-        action = QAction("preferences",self)
+        action = QAction("settings",self)
         action.triggered.connect(self.settingsMenu)
         self.mainMenu.addAction(action)
 
@@ -92,8 +92,16 @@ class EmotionLabeler(QMainWindow):
         self.setWin.reloadsignal.connect(self.reloadSaver)
         self.setWin.show()
 
-    def reloadSaver(self):
-        self.saver._init()
+    def reloadSaver(self,defaults):
+        if defaults:
+            self.saver._init("data/Images",
+                   "data/faceLabels.csv",
+                   "data/labelConfig.csv")
+        else:
+            self.saver._init(self.setWin.imageDir.text(),
+                             self.setWin.labelListPath.text(),
+                             self.setWin.labelConfigPath.text())
+
         self.LabelMenu.clear()
         self.LabelMenu.addItems(self.saver.labels)
         self.updateLabelTracker()
@@ -174,23 +182,24 @@ class EmotionLabeler(QMainWindow):
         self.CapAndSaveShortcut = QShortcut(QKeySequence("Space"),self)
 
 
-
-
         self.show()
 
+
+# Set CloseEvent to change paths of data/saver
+# Set eachbutton so that when it's changed it checks if that's a valid path.
 class settingsWindow(QDialog):
-    reloadsignal = pyqtSignal()
+    reloadsignal = pyqtSignal(bool)
     def __init__(self, parent, size):
         super(settingsWindow, self).__init__(parent)
         loadUi('settings.ui',self)
-        self.labelConfig.returnPressed.connect(self.p)
+        self.labelConfigPath.returnPressed.connect(self.p)
 
     def closeEvent(self, QCloseEvent):
-        self.reloadsignal.emit()
+        self.reloadsignal.emit(False)
 
 
     def p(self):
-        print(self.labelConfig.text())
+        print(self.labelConfigPath.text())
 
 
 
