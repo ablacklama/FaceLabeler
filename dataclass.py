@@ -6,20 +6,22 @@ from collections import Counter
 
 
 class SaveData:
-    def __init__(self, PhotoData, labelConfig="data/labelConfig.csv", labelList="data/faceLabels.csv", imageDir="data/Images"):
-        self.imageDir = imageDir
+    def __init__(self, PhotoData):
+        self.PhotoData = PhotoData
+        self._init()
+
+    def _init(self):
+        self.imageDir = "data/Images"
         self.labels = []
         self.imageIndex = 0
-        self.PhotoData = PhotoData
-        self.labelListPath = labelList
-        self.labelConfigPath = labelConfig
+        self.labelListPath = "data/faceLabels.csv"
+        self.labelConfigPath = "data/labelConfig.csv"
         self.faceImg = None
 
-        with open(labelConfig, 'r+') as csvfile:
+        with open(self.labelConfigPath, 'r+') as csvfile:
             reader = csv.reader(csvfile, delimiter=",")
             for row in reader:
                 self.labels.append(row[1])
-
 
         self.labels = np.array(self.labels)
         self.currentLabel = self.labels[0]
@@ -42,7 +44,6 @@ class SaveData:
         if not os.path.isdir(self.imageDir):
             os.mkdir(self.imageDir)
 
-        #print(self.labelCount, self.imageIndex)
 
     def set_face_image(self,image):
         self.faceImg = image
