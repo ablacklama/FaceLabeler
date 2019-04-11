@@ -192,14 +192,12 @@ class settingsWindow(QDialog):
     def __init__(self, parent, size):
         super(settingsWindow, self).__init__(parent)
         loadUi('settings.ui',self)
-        self.labelConfigPath.returnPressed.connect(self.p)
+        self.saveButton.clicked.connect(lambda: self.reloadsignal.emit(False))
+        self.restoreDefaultsButton.clicked.connect(lambda: self.reloadsignal.emit(True))
 
     def closeEvent(self, QCloseEvent):
         self.reloadsignal.emit(False)
 
-
-    def p(self):
-        print(self.labelConfigPath.text())
 
 
 
