@@ -192,9 +192,9 @@ class settingsWindow(QDialog):
         super(settingsWindow, self).__init__(parent)
         loadUi('settings.ui',self)
         self.parent = parent
-        self.refreshButton.clicked.connect(self.loadText)
-        self.saveButton.clicked.connect(lambda: self.reload(False))
-        self.restoreDefaultsButton.clicked.connect(lambda: self.reload(True))
+        self.buttonArray.button(QDialogButtonBox.Discard).clicked.connect(self.loadText)
+        self.buttonArray.button(QDialogButtonBox.Save).clicked.connect(lambda: self.reload(False))
+        self.buttonArray.button(QDialogButtonBox.RestoreDefaults).clicked.connect(lambda: self.reload(True))
 
     def loadText(self):
         self.imageDir.setText(self.parent.saver.imageDir)
@@ -204,6 +204,8 @@ class settingsWindow(QDialog):
     def reload(self, defaults):
         self.reloadsignal.emit(defaults)
         self.loadText()
+
+
 
 
 
