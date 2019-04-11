@@ -1,7 +1,8 @@
 import sys
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap, QImage,QKeySequence, QIcon
+from PyQt5.uic import loadUi
 from video import VideoThread
 from dataclass import SharedData, SaveData
 from facedetection import FaceDetectionThread
@@ -53,7 +54,9 @@ class EmotionLabeler(QMainWindow):
 
     def createMenu(self):
         self.mainMenu = self.menuBar()
-        self.fileMenu = self.mainMenu.addMenu('File')
+        action = QAction("preferences",self)
+        action.triggered.connect(self.settingsMenu)
+        self.mainMenu.addAction(action)
 
     def saveLabeledFace(self):
         self.saver.save_current()
@@ -84,7 +87,16 @@ class EmotionLabeler(QMainWindow):
         else:
             self.CapAndSaveShortcut.activated.disconnect()
 
+    def settingsMenu(self):
+        self.setWin = settingsWindow(self,self.MainWindowSize)
+        self.setWin.reloadsignal.connect(self.reloadSaver)
+        self.setWin.show()
 
+    def reloadSaver(self):
+        self.saver._init()
+        self.LabelMenu.clear()
+        self.LabelMenu.addItems(self.saver.labels)
+        self.updateLabelTracker()
 
     def initUI(self):
 
@@ -165,6 +177,22 @@ class EmotionLabeler(QMainWindow):
 
 
         self.show()
+
+class settingsWindow(QDialog):
+    reloadsignal = pyqtSignal()
+    def __init__(self, parent, size):
+        super(settingsWindow, self).__init__(parent)
+        loadUi('settings.ui',self)
+        self.labelConfig.returnPressed.connect(self.p)
+
+    def closeEvent(self, QCloseEvent):
+        self.reloadsignal.emit()
+
+
+    def p(self):
+        print(self.labelConfig.text())
+
+
 
 def handle_error(error):
     error_box = QMessageBox()
