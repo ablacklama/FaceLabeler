@@ -9,6 +9,7 @@ from facedetection import FaceDetectionThread
 import cv2
 import os
 import signal
+from helper import handle_error, showInvalidPaths
 
 
 
@@ -105,23 +106,8 @@ class EmotionLabeler(QMainWindow):
                              self.setWin.labelConfigPath.text()]
 
         #make list of all invalid paths in the list
-        invalidPaths = []
-        for path in patharr:
-            if not os.path.exists(path):
-                invalidPaths.append(path)
-
-        #if any invalid paths exist open error window
-        if len(invalidPaths) > 0:
-            error_box = QMessageBox()
-            error_box.setIcon(QMessageBox.Warning)
-            error_box.setWindowIcon(QIcon("icon.ico"))
-            error_box.setWindowTitle("Path Error")
-            error_box.setText('One or more paths are not valid')
-            error_box.setInformativeText("\n".join(invalidPaths))
-            error_box.setTextFormat(Qt.RichText)
-            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse)
-            error_box.exec()
-        else:
+        invalidPaths = showInvalidPaths(patharr)
+        if len(invalidPaths) < 1:
             #update saver, main window UI, and settings window ui
             self.saver._init(*patharr)
             self.LabelMenu.clear()
@@ -216,6 +202,7 @@ class settingsWindow(QDialog):
         super(settingsWindow, self).__init__(parent)
         loadUi('settings.ui',self)
         self.parent = parent
+        self.loadText()
         self.buttonArray.button(QDialogButtonBox.Discard).clicked.connect(self.loadText)
         self.buttonArray.button(QDialogButtonBox.Save).clicked.connect(lambda: self.reload(False))
         self.buttonArray.button(QDialogButtonBox.RestoreDefaults).clicked.connect(lambda: self.reload(True))
@@ -231,18 +218,7 @@ class settingsWindow(QDialog):
 
 
 
-def handle_error(error):
-    error_box = QMessageBox()
-    error_box.setIcon(QMessageBox.Critical)
-    error_box.setWindowIcon(QIcon("icon.ico"))
-    error_box.setWindowTitle("Fetal Error")
-    error_box.setText('A critical error occurred. Select the details to display it.')
-    error_box.setInformativeText("If you think this is a bug, please report it to "
-                                 "<a href=https://github.com/ablacklama/FaceLabeler/issues/new>the owner's GitHub</a>")
-    error_box.setTextFormat(Qt.RichText)
-    error_box.setDetailedText(str(error))
-    error_box.setTextInteractionFlags(Qt.TextSelectableByMouse)
-    error_box.exec()
+
 
 
 

@@ -3,6 +3,7 @@ import numpy as np
 import csv
 import os
 from collections import Counter
+from helper import showInvalidPaths
 
 
 class SaveData:
@@ -13,38 +14,41 @@ class SaveData:
                    "data/labelConfig.csv")
 
     def _init(self,imageDir, labelListPath, labelConfigPath):
+        invalidPaths = showInvalidPaths([imageDir,labelListPath,labelConfigPath],
+                                        extraText="configure these in settings the app will crash\n\n")
+
         self.imageDir = imageDir
         self.labels = []
         self.imageIndex = 0
         self.labelListPath = labelListPath
         self.labelConfigPath = labelConfigPath
         self.faceImg = None
+        if len(invalidPaths) < 1:
+            with open(self.labelConfigPath, 'r+') as csvfile:
+                reader = csv.reader(csvfile, delimiter=",")
+                for row in reader:
+                    self.labels.append(row[1])
 
-        with open(self.labelConfigPath, 'r+') as csvfile:
-            reader = csv.reader(csvfile, delimiter=",")
-            for row in reader:
-                self.labels.append(row[1])
+            self.labels = np.array(self.labels)
+            self.currentLabel = self.labels[0]
 
-        self.labels = np.array(self.labels)
-        self.currentLabel = self.labels[0]
+            if os.path.isfile(self.labelListPath):
+                with open(self.labelListPath, 'r') as file:
+                    l = np.array(list(csv.reader(file)))
+                    if l.shape[0] > 0:
+                        self.labelCount = Counter(l[:, 1])
+                        self.imageIndex = int(l[-1, 0][4:-4]) + 1
+                    else:
+                        self.labelCount = {}
+            else:
+                self.labelCount = Counter()
 
-        if os.path.isfile(self.labelListPath):
-            with open(self.labelListPath, 'r') as file:
-                l = np.array(list(csv.reader(file)))
-                if l.shape[0] > 0:
-                    self.labelCount = Counter(l[:, 1])
-                    self.imageIndex = int(l[-1, 0][4:-4]) + 1
-                else:
-                    self.labelCount = {}
-        else:
-            self.labelCount = Counter()
+            for key in self.labels:
+                if key not in self.labelCount:
+                    self.labelCount[key] = 0
 
-        for key in self.labels:
-            if key not in self.labelCount:
-                self.labelCount[key] = 0
-
-        if not os.path.isdir(self.imageDir):
-            os.mkdir(self.imageDir)
+            if not os.path.isdir(self.imageDir):
+                os.mkdir(self.imageDir)
 
     def get_paths(self):
         return [self.imageDir,
