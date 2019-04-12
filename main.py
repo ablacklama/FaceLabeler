@@ -88,23 +88,47 @@ class EmotionLabeler(QMainWindow):
             self.CapAndSaveShortcut.activated.disconnect()
 
     def settingsMenu(self):
+        #open settings window
         self.setWin = settingsWindow(self)
         self.setWin.reloadsignal.connect(self.reloadSaver)
         self.setWin.show()
 
-    def reloadSaver(self,defaults):
+    def reloadSaver(self, defaults, fromSetWin=False):
+        #change files in saver
+        #defaults: bool, true if we are reseting to default paths
         if defaults:
-            self.saver._init("data/Images",
-                   "data/faceLabels.csv",
-                   "data/labelConfig.csv")
+            patharr = ["data/Images","data/faceLabels.csv","data/labelConfig.csv"]
         else:
-            self.saver._init(self.setWin.imageDir.text(),
+            #get the paths the user has set in the settings window
+            patharr = [self.setWin.imageDir.text(),
                              self.setWin.labelListPath.text(),
-                             self.setWin.labelConfigPath.text())
+                             self.setWin.labelConfigPath.text()]
 
-        self.LabelMenu.clear()
-        self.LabelMenu.addItems(self.saver.labels)
-        self.updateLabelTracker()
+        #make list of all invalid paths in the list
+        invalidPaths = []
+        for path in patharr:
+            if not os.path.exists(path):
+                invalidPaths.append(path)
+
+        #if any invalid paths exist open error window
+        if len(invalidPaths) > 0:
+            error_box = QMessageBox()
+            error_box.setIcon(QMessageBox.Warning)
+            error_box.setWindowIcon(QIcon("icon.ico"))
+            error_box.setWindowTitle("Path Error")
+            error_box.setText('One or more paths are not valid')
+            error_box.setInformativeText("\n".join(invalidPaths))
+            error_box.setTextFormat(Qt.RichText)
+            error_box.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            error_box.exec()
+        else:
+            #update saver, main window UI, and settings window ui
+            self.saver._init(*patharr)
+            self.LabelMenu.clear()
+            self.LabelMenu.addItems(self.saver.labels)
+            self.updateLabelTracker()
+            if fromSetWin:
+                self.setWin.loadText()
 
     def initUI(self):
 
@@ -187,7 +211,7 @@ class EmotionLabeler(QMainWindow):
 
 
 class settingsWindow(QDialog):
-    reloadsignal = pyqtSignal(bool)
+    reloadsignal = pyqtSignal(bool, bool)
     def __init__(self, parent,):
         super(settingsWindow, self).__init__(parent)
         loadUi('settings.ui',self)
@@ -202,12 +226,8 @@ class settingsWindow(QDialog):
         self.labelConfigPath.setText(self.parent.saver.labelConfigPath)
 
     def reload(self, defaults):
-        self.reloadsignal.emit(defaults)
-        self.loadText()
-
-
-
-
+        print("reloaded")
+        self.reloadsignal.emit(defaults, True)
 
 
 
