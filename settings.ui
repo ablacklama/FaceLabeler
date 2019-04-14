@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>277</width>
-    <height>161</height>
+    <width>353</width>
+    <height>166</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,7 +47,7 @@
     <rect>
      <x>8</x>
      <y>100</y>
-     <width>251</width>
+     <width>301</width>
      <height>31</height>
     </rect>
    </property>
@@ -63,8 +63,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>251</width>
-     <height>74</height>
+     <width>301</width>
+     <height>81</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -74,37 +74,6 @@
     <property name="rightMargin">
      <number>3</number>
     </property>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Image folder</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>label output file</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="imageDir">
-      <property name="styleSheet">
-       <string notr="true">&lt;font color=red&gt;</string>
-      </property>
-      <property name="text">
-       <string>data/Images</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="labelConfigPath">
-      <property name="text">
-       <string>data/labelConfig.csv</string>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="1">
      <widget class="QLineEdit" name="labelListPath">
       <property name="text">
@@ -119,6 +88,37 @@
       </property>
       <property name="text">
        <string>Label Config</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="labelConfigPath">
+      <property name="text">
+       <string>data/labelConfig.csv</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Image folder</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="imageDir">
+      <property name="styleSheet">
+       <string notr="true">&lt;font color=red&gt;</string>
+      </property>
+      <property name="text">
+       <string>data/Images</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>label output file</string>
       </property>
      </widget>
     </item>

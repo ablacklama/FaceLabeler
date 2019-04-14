@@ -23,7 +23,7 @@ class EmotionLabeler(QMainWindow):
             self.videoRunning = None
             self.PhotoData = SharedData()
             self.saver = SaveData(self.PhotoData)
-            self.initUI()
+            self.initUI_alt()
         except Exception as e:
             handle_error(e)
             raise(e)
@@ -189,6 +189,60 @@ class EmotionLabeler(QMainWindow):
         self.CapShortcutBox.stateChanged.connect(self.capShortcutToggle)
         self.CapShortcutBox.move(650, 240)
         self.CapShortcutBox.resize(180,16)
+        self.CapAndSaveShortcut = QShortcut(QKeySequence("Space"),self)
+
+
+        self.show()
+
+    def initUI_alt(self):
+        loadUi('mainwindow.ui', self)
+        qtRectangle = self.frameGeometry()
+        self.createMenu()
+        centerpoint = QDesktopWidget().availableGeometry().center()
+        qtRectangle.moveCenter(centerpoint)
+
+        #WINDOW TITLE
+        self.setWindowTitle("FaceLabeler")
+        self.setWindowIcon(QIcon("data/icon.ico"))
+
+
+        #FACE DETECTION
+        faceth = FaceDetectionThread(self.PhotoData)
+        faceth.start()
+
+
+        #GET IMAGE BUTTON
+        self.FaceButton.clicked.connect(self.setFaceImg)
+
+
+        #VIDEO STREAM
+        vidth = VideoThread(self.PhotoData)
+        vidth.changePixmap.connect(self.setImage)
+        vidth.start()
+
+        #GREYSCALE TOGGLE
+        self.GrayScaleBox.stateChanged.connect(self.greyScaleToggle)
+        self.GrayScaleBox.toggle()
+
+        #SAVE BUTTON
+        self.SaveButton.clicked.connect(self.saveLabeledFace)
+
+        #LABEL SELECTION
+        self.LabelMenu.addItems(self.saver.labels)
+        self.LabelMenu.currentIndexChanged.connect(self.labelChange)
+
+        #LABEL COUNT TRACKER
+        self.updateLabelTracker()
+        self.LabelTracker.setAlignment(Qt.AlignHCenter)
+
+
+        #CAPTURE AND SAVE BUTTON
+        self.CapAndSaveButton.clicked.connect(self.captureAndSave)
+
+
+
+        #CAP AND SAVE SHORTCUT TOGGLE
+        self.CapShortcutBox.stateChanged.connect(self.capShortcutToggle)
         self.CapAndSaveShortcut = QShortcut(QKeySequence("Space"),self)
 
 
