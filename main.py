@@ -153,7 +153,7 @@ class EmotionLabeler(QMainWindow):
         #GREYSCALE TOGGLE
         self.GrayScaleBox = QCheckBox("GrayScale", self)
         self.GrayScaleBox.stateChanged.connect(self.greyScaleToggle)
-        self.GrayScaleBox.move(700,260)
+        self.GrayScaleBox.move(650,260)
         self.GrayScaleBox.toggle()
 
         #SAVE BUTTON
@@ -166,7 +166,7 @@ class EmotionLabeler(QMainWindow):
         self.LabelMenu = QComboBox(self)
         self.LabelMenu.addItems(self.saver.labels)
         self.LabelMenu.currentIndexChanged.connect(self.labelChange)
-        self.LabelMenu.move(700,300)
+        self.LabelMenu.move(650,300)
 
         #LABEL COUNT TRACKER
         self.LabelTracker = QLabel(self)
@@ -184,11 +184,11 @@ class EmotionLabeler(QMainWindow):
 
 
 
-        #CAP AND SAVE SHORTCUT
-        self.CapShortcutBox = QCheckBox("Cap/Save shortcut on", self)
+        #CAP AND SAVE SHORTCUT TOGGLE
+        self.CapShortcutBox = QCheckBox("Enable Cap/Save Shortcut", self)
         self.CapShortcutBox.stateChanged.connect(self.capShortcutToggle)
-        self.CapShortcutBox.move(700, 240)
-        self.CapShortcutBox.resize(125,15)
+        self.CapShortcutBox.move(650, 240)
+        self.CapShortcutBox.resize(180,16)
         self.CapAndSaveShortcut = QShortcut(QKeySequence("Space"),self)
 
 
