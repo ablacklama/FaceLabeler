@@ -78,6 +78,7 @@ class SaveData:
                 self.labelCount[self.currentLabel] += 1
 
         else:
+            #TODO replace with betting error
             print("No Face Image")
 
 
@@ -107,7 +108,6 @@ class SharedData:
         return datastr
 
     def set_photo(self, photo):
-        #print("photo set: " + str(photo.shape))
         self.hasPhoto = True
         self.frame = photo
 
@@ -115,7 +115,6 @@ class SharedData:
         return self.frame
 
     def get_face_image(self):
-        #print(self.hasFaceImg, self.FaceImg.shape)
         if self.hasFaceImg:
             return self.hasFaceImg, np.copy(self.FaceImg)
         else:

@@ -146,7 +146,7 @@ class EmotionLabeler(QMainWindow):
         self.videoFeed = QLabel(self)
         self.videoFeed.move(0, 40)
         self.videoFeed.resize(640, 480)
-        vidth = VideoThread(self.PhotoData)#, camera="http://192.168.1.9:4747/video")
+        vidth = VideoThread(self.PhotoData)
         vidth.changePixmap.connect(self.setImage)
         vidth.start()
 
@@ -213,7 +213,6 @@ class settingsWindow(QDialog):
         self.labelConfigPath.setText(self.parent.saver.labelConfigPath)
 
     def reload(self, defaults):
-        print("reloaded")
         self.reloadsignal.emit(defaults, True)
 
 
