@@ -2,6 +2,12 @@
 <ui version="4.0">
  <class>settingsWindow</class>
  <widget class="QDialog" name="settingsWindow">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -9,6 +15,9 @@
     <width>353</width>
     <height>166</height>
    </rect>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>settings</string>
@@ -34,7 +43,7 @@
     <rect>
      <x>10</x>
      <y>130</y>
-     <width>131</width>
+     <width>161</width>
      <height>16</height>
     </rect>
    </property>

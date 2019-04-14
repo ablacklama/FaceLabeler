@@ -24,6 +24,7 @@ class EmotionLabeler(QMainWindow):
             self.PhotoData = SharedData()
             self.saver = SaveData(self.PhotoData)
             self.initUI_alt()
+            self.setupSettings()
         except Exception as e:
             handle_error(e)
             raise(e)
@@ -50,13 +51,13 @@ class EmotionLabeler(QMainWindow):
         p = QPixmap.fromImage(qimg)
         self.faceImg.setPixmap(p)
 
-    def greyScaleToggle(self, state):
+    def greyScaleToggle(self):
         self.PhotoData.set_graytoggle_state(self.GrayScaleBox.isChecked())
 
     def createMenu(self):
         self.mainMenu = self.menuBar()
         action = QAction("settings",self)
-        action.triggered.connect(self.settingsMenu)
+        action.triggered.connect(self.openSettings)
         self.mainMenu.addAction(action)
 
     def saveLabeledFace(self):
@@ -88,11 +89,13 @@ class EmotionLabeler(QMainWindow):
         else:
             self.CapAndSaveShortcut.activated.disconnect()
 
-    def settingsMenu(self):
-        #open settings window
+    def openSettings(self):
+        self.setWin.show()
+
+    def setupSettings(self):
         self.setWin = settingsWindow(self)
         self.setWin.reloadsignal.connect(self.reloadSaver)
-        self.setWin.show()
+
 
     def reloadSaver(self, defaults, fromSetWin=False):
         #change files in saver
@@ -235,11 +238,8 @@ class EmotionLabeler(QMainWindow):
         self.updateLabelTracker()
         self.LabelTracker.setAlignment(Qt.AlignHCenter)
 
-
         #CAPTURE AND SAVE BUTTON
         self.CapAndSaveButton.clicked.connect(self.captureAndSave)
-
-
 
         #CAP AND SAVE SHORTCUT TOGGLE
         self.CapShortcutBox.stateChanged.connect(self.capShortcutToggle)
