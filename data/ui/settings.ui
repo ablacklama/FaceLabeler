@@ -12,9 +12,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>353</width>
-    <height>160</height>
+    <width>330</width>
+    <height>175</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>330</width>
+    <height>175</height>
+   </size>
   </property>
   <property name="contextMenuPolicy">
    <enum>Qt::DefaultContextMenu</enum>
@@ -48,7 +54,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>130</y>
+     <y>146</y>
      <width>161</width>
      <height>16</height>
     </rect>
@@ -61,7 +67,7 @@
    <property name="geometry">
     <rect>
      <x>8</x>
-     <y>100</y>
+     <y>116</y>
      <width>301</width>
      <height>31</height>
     </rect>
@@ -79,33 +85,16 @@
      <x>10</x>
      <y>10</y>
      <width>301</width>
-     <height>81</height>
+     <height>100</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0">
     <property name="sizeConstraint">
      <enum>QLayout::SetDefaultConstraint</enum>
     </property>
     <property name="rightMargin">
      <number>3</number>
     </property>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="labelListPath">
-      <property name="text">
-       <string>data/faceLabels.csv</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Label Config</string>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="1">
      <widget class="QLineEdit" name="labelConfigPath">
       <property name="text">
@@ -134,6 +123,55 @@
      <widget class="QLabel" name="label_2">
       <property name="text">
        <string>label output file</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="labelListPath">
+      <property name="text">
+       <string>data/faceLabels.csv</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Label Config</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="toolTip">
+       <string>delay in seconds between each itteration of face detection algorithm. Higher will lead to more detection lag and lower cpu usage.</string>
+      </property>
+      <property name="text">
+       <string>Face Detection Delay</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QDoubleSpinBox" name="detectionDelay">
+      <property name="maximumSize">
+       <size>
+        <width>50</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>delay in seconds between each itteration of face detection algorithm. Higher will lead to more detection lag and lower cpu usage.</string>
+      </property>
+      <property name="decimals">
+       <number>2</number>
+      </property>
+      <property name="maximum">
+       <double>1.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
       </property>
      </widget>
     </item>

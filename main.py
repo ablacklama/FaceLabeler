@@ -19,10 +19,7 @@ class EmotionLabeler(QMainWindow):
     def __init__(self):
         try:
             super().__init__()
-            self.MainWindowSize = [900,580]
-            self.LabelTrackerSize = [640,200]
-            self.videoRunning = None
-            self.PhotoData = SharedPhotoData()
+            self.PhotoData = SharedPhotoData(config)
             self.saver = SaveData(self.PhotoData, config)
             self.initUI()
             self.setupSettings()
@@ -108,12 +105,16 @@ class EmotionLabeler(QMainWindow):
             patharr = [config["DEFAULT"]["imageDir"],
                        config["DEFAULT"]["labelListPath"],
                        config["DEFAULT"]["labelConfigPath"]]
+            delay = float(config["DEFAULT"]["detectionDelay"])
         else:
             #get the paths the user has set in the settings window
             patharr = [self.setWin.imageDir.text(),
                              self.setWin.labelListPath.text(),
                              self.setWin.labelConfigPath.text()]
+            delay = self.setWin.detectionDelay.value()
 
+        config["CUSTOM"]["detectionDelay"] = str(delay)
+        self.PhotoData.detectionDelay = delay
         #make list of all invalid paths in the list
         invalidPaths = showInvalidPaths(patharr)
         if len(invalidPaths) < 1:
@@ -203,6 +204,7 @@ class settingsWindow(QDialog):
         self.buttonArray.button(QDialogButtonBox.RestoreDefaults).clicked.connect(lambda: self.reload(True))
 
     def loadText(self):
+        self.detectionDelay.setValue(self.parent.PhotoData.detectionDelay)
         self.imageDir.setText(self.parent.saver.imageDir)
         self.labelListPath.setText(self.parent.saver.labelListPath)
         self.labelConfigPath.setText(self.parent.saver.labelConfigPath)
@@ -226,7 +228,7 @@ if __name__ == '__main__':
         app = QApplication(sys.argv)
         ex = EmotionLabeler()
         signal.signal(signal.SIGTERM, app.exec_())
-        with open("settings.ini", "w") as configFile:
+        with open("data/ui/settings.ini", "w") as configFile:
             config.write(configFile)
         os.kill(PID, signal.SIGTERM)
     except Exception as e:

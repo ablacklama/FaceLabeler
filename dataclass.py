@@ -86,7 +86,7 @@ class SaveData:
 
 
 class SharedPhotoData:
-    def __init__(self):
+    def __init__(self, config):
         self.hasPhoto = False
         self.frame = None
         self.FaceImg = None
@@ -95,6 +95,8 @@ class SharedPhotoData:
         self.facedims = None
         self.hasFaceImg = False
         self.showFaceBox = False
+        self.config = config
+        self.detectionDelay = float(config["CUSTOM"]["detectionDelay"])
 
 
     def __str__(self):
