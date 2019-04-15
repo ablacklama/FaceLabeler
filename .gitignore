@@ -93,4 +93,3 @@ data/Images/*
 dist/
 *.spec
 *.exe
-*.ico

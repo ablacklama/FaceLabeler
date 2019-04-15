@@ -110,7 +110,7 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>300</y>
+      <y>320</y>
       <width>73</width>
       <height>22</height>
      </rect>
@@ -154,6 +154,19 @@
     </property>
     <property name="text">
      <string>Enable Cap/Save Shortcut</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="ShowFaceDetectionBox">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>280</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show Face Detection Box</string>
     </property>
    </widget>
   </widget>
