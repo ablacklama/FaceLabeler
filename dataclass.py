@@ -4,7 +4,6 @@ import csv
 import os
 from collections import Counter
 from helper import showInvalidPaths
-import configparser
 
 
 
@@ -82,9 +81,6 @@ class SaveData:
         else:
             #TODO replace with betting error
             print("No Face Image")
-
-
-
 
 
 

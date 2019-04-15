@@ -24,7 +24,7 @@ class EmotionLabeler(QMainWindow):
             self.videoRunning = None
             self.PhotoData = SharedData()
             self.saver = SaveData(self.PhotoData, config)
-            self.initUI_alt()
+            self.initUI()
             self.setupSettings()
         except Exception as e:
             handle_error(e)
@@ -97,7 +97,6 @@ class EmotionLabeler(QMainWindow):
         self.setWin = settingsWindow(self)
         self.setWin.reloadsignal.connect(self.reloadSaver)
 
-
     def reloadSaver(self, defaults, fromSetWin=False):
         #change files in saver
         #defaults: bool, true if we are reseting to default paths
@@ -128,84 +127,6 @@ class EmotionLabeler(QMainWindow):
                 self.setWin.loadText()
 
     def initUI(self):
-
-        self.resize(*self.MainWindowSize)
-        qtRectangle = self.frameGeometry()
-        self.createMenu()
-        centerpoint = QDesktopWidget().availableGeometry().center()
-        qtRectangle.moveCenter(centerpoint)
-
-        #WINDOW TITLE
-        self.setWindowTitle("FaceLabeler")
-        self.setWindowIcon(QIcon("data/icon.ico"))
-
-
-        #FACE DETECTION
-        faceth = FaceDetectionThread(self.PhotoData)
-        faceth.start()
-        self.faceImg = QLabel(self)
-        self.faceImg.move(650, 40)
-        self.faceImg.resize(200, 200)
-
-        #GET IMAGE BUTTON
-        self.FaceButton = QPushButton("Get Image", self)
-        self.FaceButton.move(650, 490)
-        self.FaceButton.clicked.connect(self.setFaceImg)
-
-
-        #VIDEO STREAM
-        self.videoFeed = QLabel(self)
-        self.videoFeed.move(0, 40)
-        self.videoFeed.resize(640, 480)
-        vidth = VideoThread(self.PhotoData)
-        vidth.changePixmap.connect(self.setImage)
-        vidth.start()
-
-        #GREYSCALE TOGGLE
-        self.GrayScaleBox = QCheckBox("GrayScale", self)
-        self.GrayScaleBox.stateChanged.connect(self.greyScaleToggle)
-        self.GrayScaleBox.move(650,260)
-        self.GrayScaleBox.toggle()
-
-        #SAVE BUTTON
-        self.SaveButton = QPushButton("Save", self)
-        self.SaveButton.move(750,490)
-        self.SaveButton.resize(self.FaceButton.size())
-        self.SaveButton.clicked.connect(self.saveLabeledFace)
-
-        #LABEL SELECTION
-        self.LabelMenu = QComboBox(self)
-        self.LabelMenu.addItems(self.saver.labels)
-        self.LabelMenu.currentIndexChanged.connect(self.labelChange)
-        self.LabelMenu.move(650,300)
-
-        #LABEL COUNT TRACKER
-        self.LabelTracker = QLabel(self)
-        self.updateLabelTracker()
-        self.LabelTracker.move(0,530)
-        self.LabelTracker.resize(*self.LabelTrackerSize)
-        self.LabelTracker.setAlignment(Qt.AlignHCenter)
-
-
-        #CAPTURE AND SAVE BUTTON
-        self.CapAndSaveButton = QPushButton("Capture and Save \n (shortcut: space)", self)
-        self.CapAndSaveButton.move(650, 520)
-        self.CapAndSaveButton.resize(200,40)
-        self.CapAndSaveButton.clicked.connect(self.captureAndSave)
-
-
-
-        #CAP AND SAVE SHORTCUT TOGGLE
-        self.CapShortcutBox = QCheckBox("Enable Cap/Save Shortcut", self)
-        self.CapShortcutBox.stateChanged.connect(self.capShortcutToggle)
-        self.CapShortcutBox.move(650, 240)
-        self.CapShortcutBox.resize(180,16)
-        self.CapAndSaveShortcut = QShortcut(QKeySequence("Space"),self)
-
-
-        self.show()
-
-    def initUI_alt(self):
         loadUi('mainwindow.ui', self)
         qtRectangle = self.frameGeometry()
         self.createMenu()
