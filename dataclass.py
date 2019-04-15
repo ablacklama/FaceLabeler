@@ -4,14 +4,16 @@ import csv
 import os
 from collections import Counter
 from helper import showInvalidPaths
+import configparser
+
 
 
 class SaveData:
-    def __init__(self, PhotoData):
+    def __init__(self, PhotoData, config):
         self.PhotoData = PhotoData
-        self._init("data/Images",
-                   "data/faceLabels.csv",
-                   "data/labelConfig.csv")
+        self._init(config["CUSTOM"]["imageDir"],
+            config["CUSTOM"]["labelListPath"],
+            config["CUSTOM"]["labelConfigPath"])
 
     def _init(self,imageDir, labelListPath, labelConfigPath):
         invalidPaths = showInvalidPaths([imageDir,labelListPath,labelConfigPath],

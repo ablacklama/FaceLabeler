@@ -10,6 +10,7 @@ import cv2
 import os
 import signal
 from helper import handle_error, showInvalidPaths
+import configparser
 
 
 
@@ -22,7 +23,7 @@ class EmotionLabeler(QMainWindow):
             self.LabelTrackerSize = [640,200]
             self.videoRunning = None
             self.PhotoData = SharedData()
-            self.saver = SaveData(self.PhotoData)
+            self.saver = SaveData(self.PhotoData, config)
             self.initUI_alt()
             self.setupSettings()
         except Exception as e:
@@ -101,7 +102,9 @@ class EmotionLabeler(QMainWindow):
         #change files in saver
         #defaults: bool, true if we are reseting to default paths
         if defaults:
-            patharr = ["data/Images","data/faceLabels.csv","data/labelConfig.csv"]
+            patharr = [config["DEFAULT"]["imageDir"],
+                       config["DEFAULT"]["labelListPath"],
+                       config["DEFAULT"]["labelConfigPath"]]
         else:
             #get the paths the user has set in the settings window
             patharr = [self.setWin.imageDir.text(),
@@ -116,6 +119,11 @@ class EmotionLabeler(QMainWindow):
             self.LabelMenu.clear()
             self.LabelMenu.addItems(self.saver.labels)
             self.updateLabelTracker()
+
+            config["CUSTOM"]["imageDir"] = patharr[0]
+            config["CUSTOM"]["labelListPath"] = patharr[1]
+            config["CUSTOM"]["labelConfigPath"] = patharr[2]
+
             if fromSetWin:
                 self.setWin.loadText()
 
@@ -252,7 +260,7 @@ class EmotionLabeler(QMainWindow):
 
 class settingsWindow(QDialog):
     reloadsignal = pyqtSignal(bool, bool)
-    def __init__(self, parent,):
+    def __init__(self, parent):
         super(settingsWindow, self).__init__(parent)
         loadUi('settings.ui',self)
         self.parent = parent
@@ -280,12 +288,17 @@ if __name__ == '__main__':
     PID = os.getpid()
 
     try:
+        config = configparser.ConfigParser()
+        config.read("settings.ini")
         app = QApplication(sys.argv)
         ex = EmotionLabeler()
         signal.signal(signal.SIGTERM, app.exec_())
+        with open("settings.ini", "w") as configFile:
+            config.write(configFile)
         os.kill(PID, signal.SIGTERM)
     except Exception as e:
-        raise (e)
-        os.kill(PID, signal.SIGTERM)
+        with open("settings.ini", "w") as configFile:
+            config.write(configFile)
+        raise(e)
 
     sys.exit()
