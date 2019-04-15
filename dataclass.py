@@ -94,7 +94,7 @@ class SharedPhotoData:
         self.greyscaletoggle = None
         self.facedims = None
         self.hasFaceImg = False
-        self.showFaceBox = True
+        self.showFaceBox = False
 
 
     def __str__(self):

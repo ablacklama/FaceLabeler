@@ -90,6 +90,10 @@ class EmotionLabeler(QMainWindow):
         else:
             self.CapAndSaveShortcut.activated.disconnect()
 
+    def showFaceDetectionBoxToggle(self):
+        self.PhotoData.showFaceBox = self.ShowFaceDetectionBox.isChecked()
+
+
     def openSettings(self):
         self.setWin.show()
 
@@ -128,6 +132,7 @@ class EmotionLabeler(QMainWindow):
 
     def initUI(self):
         loadUi('data/ui/mainwindow.ui', self)
+
         qtRectangle = self.frameGeometry()
         self.createMenu()
         centerpoint = QDesktopWidget().availableGeometry().center()
@@ -171,11 +176,13 @@ class EmotionLabeler(QMainWindow):
         self.CapAndSaveButton.clicked.connect(self.captureAndSave)
 
         #CAP AND SAVE SHORTCUT TOGGLE
-        self.CapShortcutBox.stateChanged.connect(self.capShortcutToggle)
         self.CapAndSaveShortcut = QShortcut(QKeySequence("Space"),self)
+        self.CapShortcutBox.stateChanged.connect(self.capShortcutToggle)
+
 
         #SHOW FACE DETECTION TOGGLE
-        self.ShowFaceDetectionBox.
+        self.ShowFaceDetectionBox.stateChanged.connect(self.showFaceDetectionBoxToggle)
+        self.ShowFaceDetectionBox.toggle()
 
 
         self.show()
@@ -186,6 +193,7 @@ class settingsWindow(QDialog):
     reloadsignal = pyqtSignal(bool, bool)
     def __init__(self, parent):
         super(settingsWindow, self).__init__(parent)
+        self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
         loadUi('data/ui/settings.ui',self)
         self.setWindowIcon(QIcon("data/ui/icon.ico"))
         self.parent = parent
