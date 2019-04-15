@@ -174,6 +174,9 @@ class EmotionLabeler(QMainWindow):
         self.CapShortcutBox.stateChanged.connect(self.capShortcutToggle)
         self.CapAndSaveShortcut = QShortcut(QKeySequence("Space"),self)
 
+        #SHOW FACE DETECTION TOGGLE
+        self.ShowFaceDetectionBox.
+
 
         self.show()
 
