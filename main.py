@@ -214,7 +214,7 @@ if __name__ == '__main__':
 
     try:
         config = configparser.ConfigParser()
-        config.read("settings.ini")
+        config.read("data/ui/settings.ini")
         app = QApplication(sys.argv)
         ex = EmotionLabeler()
         signal.signal(signal.SIGTERM, app.exec_())
