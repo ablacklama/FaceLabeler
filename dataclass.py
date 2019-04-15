@@ -85,15 +85,16 @@ class SaveData:
 
 
 
-class SharedData:
+class SharedPhotoData:
     def __init__(self):
         self.hasPhoto = False
         self.frame = None
         self.FaceImg = None
-        self.NoFaceImg = cv2.imread("data/noface.png")
+        self.NoFaceImg = cv2.imread("data/ui/noface.png")
         self.greyscaletoggle = None
         self.facedims = None
         self.hasFaceImg = False
+        self.showFaceBox = True
 
 
     def __str__(self):

@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap, QImage,QKeySequence, QIcon
 from PyQt5.uic import loadUi
 from video import VideoThread
-from dataclass import SharedData, SaveData
+from dataclass import SharedPhotoData, SaveData
 from facedetection import FaceDetectionThread
 import cv2
 import os
@@ -22,7 +22,7 @@ class EmotionLabeler(QMainWindow):
             self.MainWindowSize = [900,580]
             self.LabelTrackerSize = [640,200]
             self.videoRunning = None
-            self.PhotoData = SharedData()
+            self.PhotoData = SharedPhotoData()
             self.saver = SaveData(self.PhotoData, config)
             self.initUI()
             self.setupSettings()
@@ -127,7 +127,7 @@ class EmotionLabeler(QMainWindow):
                 self.setWin.loadText()
 
     def initUI(self):
-        loadUi('mainwindow.ui', self)
+        loadUi('data/ui/mainwindow.ui', self)
         qtRectangle = self.frameGeometry()
         self.createMenu()
         centerpoint = QDesktopWidget().availableGeometry().center()
@@ -135,7 +135,7 @@ class EmotionLabeler(QMainWindow):
 
         #WINDOW TITLE
         self.setWindowTitle("FaceLabeler")
-        self.setWindowIcon(QIcon("data/icon.ico"))
+        self.setWindowIcon(QIcon("data/ui/icon.ico"))
 
 
         #FACE DETECTION
@@ -183,7 +183,8 @@ class settingsWindow(QDialog):
     reloadsignal = pyqtSignal(bool, bool)
     def __init__(self, parent):
         super(settingsWindow, self).__init__(parent)
-        loadUi('settings.ui',self)
+        loadUi('data/ui/settings.ui',self)
+        self.setWindowIcon(QIcon("data/ui/icon.ico"))
         self.parent = parent
         self.loadText()
         self.buttonArray.button(QDialogButtonBox.Discard).clicked.connect(self.loadText)

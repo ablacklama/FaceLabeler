@@ -22,6 +22,8 @@ class VideoThread(QThread):
             if ret:
                 rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 self.PhotoData.set_photo(rgb_image)
+                if self.PhotoData.showFaceBox:
+                    rgb_image = self.display(rgb_image,self.PhotoData.facedims)
                 p = QImage(rgb_image.data, rgb_image.shape[1], rgb_image.shape[0], QImage.Format_RGB888)
                 self.changePixmap.emit(p)
 
@@ -29,16 +31,10 @@ class VideoThread(QThread):
         self.cap.release()
 
 
-    def display(self, img, faces, numImages, lastlabel, saving):
+    def display(self, img, faces):
         disp_img = np.copy(img)
-        if len(faces) == 1:
-            x, y, w, h = faces[0]
-            savestr = ""
-            if saving:
-                savestr = "SAVED"
+        if faces is not None and len(faces) == 4:
+            x, y, w, h = faces
             cv2.rectangle(disp_img, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            cv2.putText(disp_img, lastlabel + "  {}".format(str(numImages)) + savestr,
-                        (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, .5, (0, 255, 0))
-
         return disp_img
 
