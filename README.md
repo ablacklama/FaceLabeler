@@ -2,6 +2,12 @@
 This is a lightweight desktop tool for capturing and labeling face images.
 
 ##### Disclaimer: if multiple faces are detected, only the bigger one will be kept.
+### Requirements
+python 3.6-3.7 or whatever works
+opencv-python 4.0
+numpy 1.16
+PyQt5 5.12.1
+
 # Usage
 **`Get Image`** button will grab the current image of your face and desplay it in the top right. It will also show if no face was found. 
 
