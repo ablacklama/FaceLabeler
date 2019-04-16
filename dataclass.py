@@ -75,7 +75,7 @@ class SaveData:
                 csvFileWriter.writerow([filename,self.currentLabel])
                 self.imageIndex += 1
                 self.faceImg = None
-
+                self.PhotoData.hasFaceImg = False
                 self.labelCount[self.currentLabel] += 1
 
         else:
