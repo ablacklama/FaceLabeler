@@ -91,6 +91,7 @@ class SharedPhotoData:
         self.frame = None
         self.FaceImg = None
         self.NoFaceImg = cv2.imread("data/ui/noface.png")
+        self.NoFaceImg = cv2.cv2.cvtColor(self.NoFaceImg, cv2.COLOR_BGR2RGB)
         self.greyscaletoggle = None
         self.facedims = None
         self.hasFaceImg = False

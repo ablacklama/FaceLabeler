@@ -35,6 +35,6 @@ class VideoThread(QThread):
         disp_img = np.copy(img)
         if faces is not None and len(faces) == 4:
             x, y, w, h = faces
-            cv2.rectangle(disp_img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.rectangle(disp_img, (x, y), (x + w, y + h), (255, 127, 0), 2)
         return disp_img
 

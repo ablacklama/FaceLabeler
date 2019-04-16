@@ -12,7 +12,7 @@ class FaceDetectionThread(QThread):
         QThread.__init__(self, parent=parent)
         self.PhotoData = PhotoData
         self.haar_cascade = cv2.CascadeClassifier(
-            'data/ui/haarcascade_frontalface_default.xml')
+            'data/haarcascade/haarcascade_frontalface_default.xml')
 
 
     def biggerFace(self,faces):
