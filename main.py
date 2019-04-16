@@ -51,6 +51,7 @@ class EmotionLabeler(QMainWindow):
 
     def greyScaleToggle(self):
         self.PhotoData.set_graytoggle_state(self.GrayScaleBox.isChecked())
+        config["CUSTOM"]["grayscalebox"] = str(int(self.GrayScaleBox.isChecked()))
 
     def createMenu(self):
         self.mainMenu = self.menuBar()
@@ -82,6 +83,7 @@ class EmotionLabeler(QMainWindow):
         self.saveLabeledFace()
 
     def capShortcutToggle(self):
+        config["CUSTOM"]["capshortcutbox"] = str(int(self.CapShortcutBox.isChecked()))
         if self.CapShortcutBox.isChecked():
             self.CapAndSaveShortcut.activated.connect(self.captureAndSave)
         else:
@@ -89,7 +91,7 @@ class EmotionLabeler(QMainWindow):
 
     def showFaceDetectionBoxToggle(self):
         self.PhotoData.showFaceBox = self.ShowFaceDetectionBox.isChecked()
-
+        config["CUSTOM"]["showdetectionbox"] = str(int(self.ShowFaceDetectionBox.isChecked()))
 
     def openSettings(self):
         self.setWin.show()
@@ -143,15 +145,12 @@ class EmotionLabeler(QMainWindow):
         self.setWindowTitle("FaceLabeler")
         self.setWindowIcon(QIcon("data/ui/icon.ico"))
 
-
         #FACE DETECTION
         faceth = FaceDetectionThread(self.PhotoData)
         faceth.start()
 
-
         #GET IMAGE BUTTON
         self.FaceButton.clicked.connect(self.setFaceImg)
-
 
         #VIDEO STREAM
         vidth = VideoThread(self.PhotoData)
@@ -160,7 +159,7 @@ class EmotionLabeler(QMainWindow):
 
         #GREYSCALE TOGGLE
         self.GrayScaleBox.stateChanged.connect(self.greyScaleToggle)
-        self.GrayScaleBox.toggle()
+        self.GrayScaleBox.setChecked(bool(int(config["CUSTOM"]["grayscalebox"])))
 
         #SAVE BUTTON
         self.SaveButton.clicked.connect(self.saveLabeledFace)
@@ -179,11 +178,11 @@ class EmotionLabeler(QMainWindow):
         #CAP AND SAVE SHORTCUT TOGGLE
         self.CapAndSaveShortcut = QShortcut(QKeySequence("Space"),self)
         self.CapShortcutBox.stateChanged.connect(self.capShortcutToggle)
-
+        self.CapShortcutBox.setChecked(bool(int(config["CUSTOM"]["capshortcutbox"])))
 
         #SHOW FACE DETECTION TOGGLE
         self.ShowFaceDetectionBox.stateChanged.connect(self.showFaceDetectionBoxToggle)
-        self.ShowFaceDetectionBox.toggle()
+        self.ShowFaceDetectionBox.setChecked(bool(int(config["CUSTOM"]["showdetectionbox"])))
 
 
         self.show()
