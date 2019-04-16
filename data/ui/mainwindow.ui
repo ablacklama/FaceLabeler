@@ -12,7 +12,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>876</width>
+    <width>855</width>
     <height>619</height>
    </rect>
   </property>
@@ -24,6 +24,20 @@
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#centralwidget {background:rgb(98, 184, 253);}
+QMainWindow{background: rgb(98, 184, 253);}
+QCheckBox{color:white;}
+QPushButton{background:rgb(255, 160, 81);}
+QWidget{color:black;}
+QComboBox{background:rgb(255, 160, 81);}
+QComboBox QListView{background:rgb(255, 197, 145);}
+QMenuBar{background:white;}
+QDialog{background:rgb(218, 238, 253);}
+QLineEdit{background:rgb(255, 215, 179);}
+QDoubleSpinBox{background:rgb(255, 215, 179);}
+</string>
   </property>
   <property name="iconSize">
    <size>
@@ -39,7 +53,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>40</y>
+      <y>0</y>
       <width>640</width>
       <height>480</height>
      </rect>
@@ -58,7 +72,7 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>40</y>
+      <y>0</y>
       <width>200</width>
       <height>200</height>
      </rect>
@@ -73,60 +87,11 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="FaceButton">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>490</y>
-      <width>101</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Get Image</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="GrayScaleBox">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>260</y>
-      <width>81</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>GrayScale</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="SaveButton">
-    <property name="geometry">
-     <rect>
-      <x>750</x>
-      <y>490</y>
-      <width>100</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Save</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="LabelMenu">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>320</y>
-      <width>73</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="LabelTracker">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>530</y>
+      <y>490</y>
       <width>640</width>
       <height>200</height>
      </rect>
@@ -135,45 +100,178 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="CapAndSaveButton">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>519</y>
-      <width>200</width>
-      <height>40</height>
+      <y>220</y>
+      <width>154</width>
+      <height>261</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Capture and Save 
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,1,1,1,1,1,1">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QCheckBox" name="GrayScaleBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>GrayScale</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="CapShortcutBox">
+       <property name="text">
+        <string>Enable Cap/Save Shortcut</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="ShowFaceDetectionBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Show Face Detection Box</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QComboBox" name="LabelMenu">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+         <horstretch>1</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <property name="currentText">
+        <string/>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Preferred</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
+       <property name="topMargin">
+        <number>40</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="FaceButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Get Image</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="SaveButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CapAndSaveButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Capture and Save 
  (shortcut: space)</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="CapShortcutBox">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>240</y>
-      <width>181</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Enable Cap/Save Shortcut</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="ShowFaceDetectionBox">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>280</y>
-      <width>151</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Show Face Detection Box</string>
-    </property>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

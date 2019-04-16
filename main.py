@@ -138,6 +138,7 @@ class EmotionLabeler(QMainWindow):
 
         qtRectangle = self.frameGeometry()
         self.createMenu()
+
         centerpoint = QDesktopWidget().availableGeometry().center()
         qtRectangle.moveCenter(centerpoint)
 
