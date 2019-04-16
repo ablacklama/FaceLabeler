@@ -1,4 +1,4 @@
-# Python = 3.6
+# python = 3.6
 PyQt5 == 5.12.1
 numpy == 1.16.2
 opencv_python == 4.0.0.21
