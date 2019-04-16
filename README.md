@@ -35,3 +35,7 @@ Finally, you need a directory where the images will be saved to.
 All of these can be configured in settings.
 
 
+# Contributing
+If you want to add features, fix bugs, optimize, document, or even change the current crappy color scheme, feel free. Just make sure everything works and files are saved to the same places and in the same format.
+
+
