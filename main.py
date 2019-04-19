@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QAction, QDesktopWidget, QShortcut, QDialog, QDialog
 from PyQt5.QtGui import QPixmap, QImage,QKeySequence, QIcon
 from PyQt5.uic import loadUi
 from video import VideoThread
-from dataclass import SharedPhotoData, SaveData
+from dataclass import SharedPhotoData, SaveData, EditorData
 from facedetection import FaceDetectionThread
 import cv2
 import os
@@ -21,8 +21,10 @@ class EmotionLabeler(QMainWindow):
             super().__init__()
             self.PhotoData = SharedPhotoData(config)
             self.saver = SaveData(self.PhotoData, config)
+            self.editorData = EditorData(self)
             self.initUI()
             self.setupSettings()
+
         except Exception as e:
             handle_error(e)
             raise(e)
@@ -53,18 +55,26 @@ class EmotionLabeler(QMainWindow):
         self.PhotoData.set_graytoggle_state(self.GrayScaleBox.isChecked())
         config["CUSTOM"]["grayscalebox"] = str(int(self.GrayScaleBox.isChecked()))
 
-    def changeTabs(self, idx):
+    def changeTabs(self, idx, initializing=False):
 
         currentIdx = self.mainTabs.currentIndex()
         if currentIdx == idx:
             return
-        elif currentIdx == 0:
+        if currentIdx == 0:
             self.PhotoData.showVideoStream = False
         elif idx == 0:
             self.PhotoData.showVideoStream = True
 
+        if idx == 1:
+            self.editorData._init(config["CUSTOM"]["imageDir"],
+            config["CUSTOM"]["labelListPath"],
+            config["CUSTOM"]["labelConfigPath"])
+        elif currentIdx == 1 and not initializing:
+            self.editorData.save()
+
         self.mainTabs.setCurrentIndex(idx)
         return
+
 
 
     def createMenu(self):
@@ -79,14 +89,6 @@ class EmotionLabeler(QMainWindow):
         self.mainMenu.addAction(settingsAction)
         self.mainMenu.addAction(captureTabAction)
         self.mainMenu.addAction(editorTabAction)
-
-    def switchTabs(self):
-        idx = self.mainTabs.currentIndex()
-        if idx == 0:
-            self.mainTabs.setCurrentIndex(1)
-        else:
-            self.mainTabs.setCurrentIndex(0)
-
 
     def saveLabeledFace(self):
         self.saver.save_current()
@@ -164,6 +166,7 @@ class EmotionLabeler(QMainWindow):
 
     def initUI(self):
         loadUi('data/ui/mainwindow.ui', self)
+        self.changeTabs(0, initializing=True)
 
         qtRectangle = self.frameGeometry()
         self.createMenu()
@@ -213,6 +216,21 @@ class EmotionLabeler(QMainWindow):
         #SHOW FACE DETECTION TOGGLE
         self.ShowFaceDetectionBox.stateChanged.connect(self.showFaceDetectionBoxToggle)
         self.ShowFaceDetectionBox.setChecked(bool(int(config["CUSTOM"]["showdetectionbox"])))
+
+        #EDITOR LABEL SELECTION
+        self.editLabelSelector.addItems(self.saver.labels)
+        #self.editLabelSelector.currentIndexChanged.connect(self.EditLabelChange)
+
+        #EDITOR PICTURE NAVIGATION
+        self.editPicNav.button(QDialogButtonBox.Yes).setText("<--")
+        self.editPicNav.button(QDialogButtonBox.No).setText("-->")
+        self.editPicNav.button(QDialogButtonBox.Yes).clicked.connect(
+                                lambda: self.editorData.changePicture(-1))
+        self.editPicNav.button(QDialogButtonBox.No).clicked.connect(
+                                lambda: self.editorData.changePicture(1))
+
+        #EDITOR LABEL SAVE BUTTON
+        self.editSaveButton.clicked.connect(self.editorData.setLabel)
 
 
         self.show()

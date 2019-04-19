@@ -3,6 +3,9 @@ import numpy as np
 import csv
 import os
 from collections import Counter
+from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtWidgets import QComboBox
+
 from helper import showInvalidPaths
 
 
@@ -91,7 +94,7 @@ class SharedPhotoData:
         self.frame = None
         self.FaceImg = None
         self.NoFaceImg = cv2.imread("data/ui/noface.png")
-        self.NoFaceImg = cv2.cv2.cvtColor(self.NoFaceImg, cv2.COLOR_BGR2RGB)
+        self.NoFaceImg = cv2.cvtColor(self.NoFaceImg, cv2.COLOR_BGR2RGB)
         self.greyscaletoggle = None
         self.facedims = None
         self.hasFaceImg = False
@@ -132,3 +135,86 @@ class SharedPhotoData:
 
     def get_graytoggle_state(self):
         return self.greyscaletoggle
+
+
+
+
+class EditorData:
+    def __init__(self, parent):
+        self.photosAndLabels = []
+        self.currentIdx = 0
+        self.frameWidth = 400
+        self.frameHeight = 400
+        self.parent = parent
+        self.resizeAll = False
+
+    def _init(self,imageDir, labelListPath, labelConfigPath):
+        invalidPaths = showInvalidPaths([imageDir,labelListPath,labelConfigPath],
+                                        extraText="configure these in settings the app will crash\n\n")
+        self.frameWidth = self.parent.editPicDisplay.frameGeometry().width()
+        self.frameHeight = self.parent.editPicDisplay.frameGeometry().height()
+        self.imageDir = imageDir
+        self.labels = []
+        self.imageIndex = 0
+        self.labelListPath = labelListPath
+        self.labelConfigPath = labelConfigPath
+        self.faceImg = None
+        if len(invalidPaths) < 1:
+            with open(self.labelConfigPath, 'r+') as csvfile:
+                reader = csv.reader(csvfile, delimiter=",")
+                for row in reader:
+                    self.labels.append(row[1])
+
+            self.labels = np.array(self.labels)
+            self.currentLabel = self.labels[0]
+
+            if os.path.isfile(self.labelListPath):
+                with open(self.labelListPath, 'r') as file:
+                    self.photosAndLabels = np.array(list(csv.reader(file)))
+                    self.currentIdx = len(self.photosAndLabels) - 1
+                    if self.photosAndLabels.shape[0] > 0:
+                        self.labelCount = Counter(self.photosAndLabels[:, 1])
+                        #self.imageIndex = int(self.photosAndLabels[-1, 0][4:-4]) + 1
+                    else:
+                        self.labelCount = {}
+            else:
+                #TODO make this better
+                print("nothing to show")
+
+            for key in self.labels:
+                if key not in self.labelCount:
+                    self.labelCount[key] = 0
+        self.changePicture(0)
+        return
+
+    def changePicture(self,idxAdd):
+        newidx = self.currentIdx + idxAdd
+        if newidx < 0 or newidx >= len(self.photosAndLabels):
+            print('no pictures?')
+            return
+        self.currentIdx = newidx
+        self.picLabel = self.photosAndLabels[self.currentIdx]
+        path = os.path.join(self.imageDir,self.picLabel[0])
+        image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+        if image.shape[0] > self.frameHeight or image.shape[1] > self.frameWidth or self.resizeAll:
+            image = cv2.resize(image, (self.frameHeight, self.frameWidth))
+
+        qimg = QImage(image.data, image.shape[1], image.shape[0],
+                      image.shape[1], QImage.Format_Grayscale8)
+        self.parent.editPicDisplay.setPixmap(QPixmap.fromImage(qimg))
+        self.parent.picLabelDisplay.setText(self.picLabel[1])
+        self.parent.picPathDisplay.setText(self.picLabel[0])
+        return
+
+    def save(self):
+        with open(self.labelListPath, 'w', newline='') as outf:
+            writer = csv.writer(outf)
+            writer.writerows(self.photosAndLabels)
+        return
+
+    def setLabel(self):
+        label = self.parent.editLabelSelector.currentText()
+        self.photosAndLabels[self.currentIdx][1] = label
+        self.changePicture(0)
+        return
+

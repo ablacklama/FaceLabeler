@@ -53,8 +53,8 @@ QDialog{background:rgb(218, 238, 253);}
 QLineEdit{background:rgb(255, 215, 179);}
 QDoubleSpinBox{background:rgb(255, 215, 179);}
 QTabBar::Tab{background:rgb(98, 184, 253);}
-QWidget#tab{background:rgb(98, 184, 253);}
-QWidget#tab_2{background:rgb(98, 184, 253);}
+QWidget#captureTab{background:rgb(98, 184, 253);}
+QWidget#editingTab{background:rgb(98, 184, 253);}
 </string>
   </property>
   <property name="iconSize">
@@ -98,7 +98,7 @@ QWidget#tab_2{background:rgb(98, 184, 253);}
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="iconSize">
      <size>
@@ -115,7 +115,7 @@ QWidget#tab_2{background:rgb(98, 184, 253);}
     <property name="tabsClosable">
      <bool>false</bool>
     </property>
-    <widget class="QWidget" name="tab">
+    <widget class="QWidget" name="captureTab">
      <attribute name="title">
       <string>Tab 1</string>
      </attribute>
@@ -374,23 +374,150 @@ QWidget#tab_2{background:rgb(98, 184, 253);}
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_2">
+    <widget class="QWidget" name="editingTab">
      <attribute name="title">
       <string>Tab 2</string>
      </attribute>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="editPicDisplay">
       <property name="geometry">
        <rect>
-        <x>480</x>
-        <y>220</y>
-        <width>47</width>
-        <height>13</height>
+        <x>260</x>
+        <y>50</y>
+        <width>400</width>
+        <height>400</height>
        </rect>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string/>
       </property>
      </widget>
+     <widget class="QListView" name="listView">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>221</width>
+        <height>491</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QDialogButtonBox" name="editPicNav">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>460</y>
+        <width>161</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons">
+       <set>QDialogButtonBox::No|QDialogButtonBox::Yes</set>
+      </property>
+      <property name="centerButtons">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="editLabelSelector">
+      <property name="geometry">
+       <rect>
+        <x>570</x>
+        <y>460</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>700</x>
+        <y>160</y>
+        <width>160</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetNoConstraint</enum>
+       </property>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Label</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Picture</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="picPathDisplay">
+         <property name="frame">
+          <bool>false</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="picLabelDisplay">
+         <property name="frame">
+          <bool>false</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="labelBackground">
+      <property name="geometry">
+       <rect>
+        <x>699</x>
+        <y>162</y>
+        <width>163</width>
+        <height>46</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgb(255, 160, 81)</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="editSaveButton">
+      <property name="geometry">
+       <rect>
+        <x>650</x>
+        <y>460</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Save</string>
+      </property>
+     </widget>
+     <zorder>labelBackground</zorder>
+     <zorder>editPicDisplay</zorder>
+     <zorder>listView</zorder>
+     <zorder>editPicNav</zorder>
+     <zorder>editLabelSelector</zorder>
+     <zorder>gridLayoutWidget</zorder>
+     <zorder>editSaveButton</zorder>
     </widget>
    </widget>
   </widget>
