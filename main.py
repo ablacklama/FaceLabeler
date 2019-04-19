@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtCore import Qt,pyqtSignal
-from PyQt5.QtWidgets import QAction, QDesktopWidget, QShortcut, QDialog, QDialogButtonBox, QApplication, QMainWindow, QMenu, QTabWidget
+from PyQt5.QtWidgets import QAction, QDesktopWidget, QShortcut, QDialog, QDialogButtonBox, QApplication, QMainWindow
 from PyQt5.QtGui import QPixmap, QImage,QKeySequence, QIcon
 from PyQt5.uic import loadUi
 from video import VideoThread
@@ -60,6 +60,7 @@ class EmotionLabeler(QMainWindow):
         currentIdx = self.mainTabs.currentIndex()
         if currentIdx == idx:
             return
+
         if currentIdx == 0:
             self.PhotoData.showVideoStream = False
         elif idx == 0:
@@ -69,13 +70,19 @@ class EmotionLabeler(QMainWindow):
             self.editorData._init(config["CUSTOM"]["imageDir"],
             config["CUSTOM"]["labelListPath"],
             config["CUSTOM"]["labelConfigPath"])
+            self.editDownShortcut.activated.connect(lambda: self.editorData.changeSelectedLabel(1))
+            self.editUpShortcut.activated.connect(lambda: self.editorData.changeSelectedLabel(-1))
+            self.editRightShortcut.activated.connect(self.picForward)
+            self.editLeftShortcut.activated.connect(self.picBack)
         elif currentIdx == 1 and not initializing:
-            self.editorData.save()
+            self.editDownShortcut.disconnect()
+            self.editUpShortcut.disconnect()
+            self.editRightShortcut.disconnect()
+            self.editLeftShortcut.disconnect()
+            self.editorData.saveCSV()
 
         self.mainTabs.setCurrentIndex(idx)
         return
-
-
 
     def createMenu(self):
         settingsAction = QAction("settings",self)
@@ -222,15 +229,26 @@ class EmotionLabeler(QMainWindow):
         #self.editLabelSelector.currentIndexChanged.connect(self.EditLabelChange)
 
         #EDITOR PICTURE NAVIGATION
+        self.picForward = lambda: self.editorData.picLeftRight(1)
+        self.picBack = lambda: self.editorData.picLeftRight(-1)
         self.editPicNav.button(QDialogButtonBox.Yes).setText("<--")
         self.editPicNav.button(QDialogButtonBox.No).setText("-->")
-        self.editPicNav.button(QDialogButtonBox.Yes).clicked.connect(
-                                lambda: self.editorData.changePicture(-1))
-        self.editPicNav.button(QDialogButtonBox.No).clicked.connect(
-                                lambda: self.editorData.changePicture(1))
+        self.editPicNav.button(QDialogButtonBox.Yes).clicked.connect(self.picBack)
+        self.editPicNav.button(QDialogButtonBox.No).clicked.connect(self.picForward)
+        self.editRightShortcut = QShortcut(QKeySequence("Right"), self)
+        self.editLeftShortcut = QShortcut(QKeySequence("Left"), self)
+        self.editUpShortcut = QShortcut(QKeySequence("Up"), self)
+        self.editDownShortcut = QShortcut(QKeySequence("Down"), self)
 
         #EDITOR LABEL SAVE BUTTON
-        self.editSaveButton.clicked.connect(self.editorData.setLabel)
+        self.editSaveButton.clicked.connect(self.editorData.saveLabel)
+
+        #PATH LIST
+        self.pathList.currentItemChanged.connect(lambda:self.editorData.changePicture(
+                                                    self.pathList.currentRow()))
+
+        #EDITOR DELETE KEY
+        self.editDelete.clicked.connect(self.editorData.deleteCurrent)
 
 
         self.show()

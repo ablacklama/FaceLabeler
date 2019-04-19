@@ -4,8 +4,7 @@ import csv
 import os
 from collections import Counter
 from PyQt5.QtGui import QPixmap, QImage
-from PyQt5.QtWidgets import QComboBox
-
+from PyQt5.QtWidgets import QListWidgetItem
 from helper import showInvalidPaths
 
 
@@ -142,17 +141,19 @@ class SharedPhotoData:
 class EditorData:
     def __init__(self, parent):
         self.photosAndLabels = []
-        self.currentIdx = 0
+        self.currentIdx = -1
         self.frameWidth = 400
         self.frameHeight = 400
         self.parent = parent
-        self.resizeAll = False
+        self.resizeAll = True
+        self.listLength = 0
 
     def _init(self,imageDir, labelListPath, labelConfigPath):
         invalidPaths = showInvalidPaths([imageDir,labelListPath,labelConfigPath],
                                         extraText="configure these in settings the app will crash\n\n")
         self.frameWidth = self.parent.editPicDisplay.frameGeometry().width()
         self.frameHeight = self.parent.editPicDisplay.frameGeometry().height()
+        self.parent.pathList.clear()
         self.imageDir = imageDir
         self.labels = []
         self.imageIndex = 0
@@ -171,7 +172,7 @@ class EditorData:
             if os.path.isfile(self.labelListPath):
                 with open(self.labelListPath, 'r') as file:
                     self.photosAndLabels = np.array(list(csv.reader(file)))
-                    self.currentIdx = len(self.photosAndLabels) - 1
+                    self.listLength = len(self.photosAndLabels)
                     if self.photosAndLabels.shape[0] > 0:
                         self.labelCount = Counter(self.photosAndLabels[:, 1])
                         #self.imageIndex = int(self.photosAndLabels[-1, 0][4:-4]) + 1
@@ -184,37 +185,64 @@ class EditorData:
             for key in self.labels:
                 if key not in self.labelCount:
                     self.labelCount[key] = 0
-        self.changePicture(0)
+        self.changePicture(self.listLength - 1)
+        for path,label in self.photosAndLabels:
+            self.parent.pathList.addItem(QListWidgetItem("{} : {}".format(path,label)))
         return
 
-    def changePicture(self,idxAdd):
-        newidx = self.currentIdx + idxAdd
+    def changePicture(self,newidx):
+
         if newidx < 0 or newidx >= len(self.photosAndLabels):
             print('no pictures?')
             return
-        self.currentIdx = newidx
-        self.picLabel = self.photosAndLabels[self.currentIdx]
-        path = os.path.join(self.imageDir,self.picLabel[0])
-        image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-        if image.shape[0] > self.frameHeight or image.shape[1] > self.frameWidth or self.resizeAll:
-            image = cv2.resize(image, (self.frameHeight, self.frameWidth))
+        self.picLabel = self.photosAndLabels[newidx]
+        if not self.currentIdx == newidx:
+            path = os.path.join(self.imageDir,self.picLabel[0])
+            image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+            if image is not None:
+                if image.shape[0] > self.frameHeight or image.shape[1] > self.frameWidth or self.resizeAll:
+                    image = cv2.resize(image, (self.frameHeight, self.frameWidth))
 
-        qimg = QImage(image.data, image.shape[1], image.shape[0],
-                      image.shape[1], QImage.Format_Grayscale8)
-        self.parent.editPicDisplay.setPixmap(QPixmap.fromImage(qimg))
+                qimg = QImage(image.data, image.shape[1], image.shape[0],
+                              image.shape[1], QImage.Format_Grayscale8)
+                self.parent.editPicDisplay.setPixmap(QPixmap.fromImage(qimg))
+
         self.parent.picLabelDisplay.setText(self.picLabel[1])
         self.parent.picPathDisplay.setText(self.picLabel[0])
+        self.currentIdx = newidx
         return
 
-    def save(self):
+    def picLeftRight(self, idxAdd):
+        self.parent.editorData.changePicture(self.currentIdx + idxAdd)
+        self.parent.pathList.setCurrentRow(self.currentIdx)
+
+    def saveCSV(self):
         with open(self.labelListPath, 'w', newline='') as outf:
             writer = csv.writer(outf)
             writer.writerows(self.photosAndLabels)
         return
 
-    def setLabel(self):
-        label = self.parent.editLabelSelector.currentText()
-        self.photosAndLabels[self.currentIdx][1] = label
-        self.changePicture(0)
+    def saveLabel(self):
+        if self.listLength > 0:
+            label = self.parent.editLabelSelector.currentText()
+            path = self.photosAndLabels[self.currentIdx][0]
+            self.parent.pathList.currentItem().setText("{} : {}".format(path,label))
+            self.photosAndLabels[self.currentIdx][1] = label
+            self.changePicture(self.currentIdx)
         return
 
+    def changeSelectedLabel(self,addIdx):
+        idx = self.parent.editLabelSelector.currentIndex()
+        idx = (idx + addIdx)%len(self.labels)
+        self.parent.editLabelSelector.setCurrentIndex(idx)
+        return
+
+    def deleteCurrent(self):
+        pathlabel = self.photosAndLabels[self.currentIdx]
+        path = os.path.join(self.imageDir, pathlabel[0])
+        if os.path.exists(path):
+            os.remove(path)
+        self.listLength -= 1
+        self.photosAndLabels = np.delete(self.photosAndLabels,[self.currentIdx], 0)
+        self.parent.pathList.takeItem(self.currentIdx)
+        self.currentIdx = self.parent.pathList.currentRow()

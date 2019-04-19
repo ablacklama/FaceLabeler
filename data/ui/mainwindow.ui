@@ -13,7 +13,7 @@
     <x>0</x>
     <y>0</y>
     <width>890</width>
-    <height>540</height>
+    <height>620</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -55,7 +55,7 @@ QDoubleSpinBox{background:rgb(255, 215, 179);}
 QTabBar::Tab{background:rgb(98, 184, 253);}
 QWidget#captureTab{background:rgb(98, 184, 253);}
 QWidget#editingTab{background:rgb(98, 184, 253);}
-</string>
+QListView{background:rgb(255, 215, 179)}</string>
   </property>
   <property name="iconSize">
    <size>
@@ -391,21 +391,11 @@ QWidget#editingTab{background:rgb(98, 184, 253);}
        <string/>
       </property>
      </widget>
-     <widget class="QListView" name="listView">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>221</width>
-        <height>491</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QDialogButtonBox" name="editPicNav">
       <property name="geometry">
        <rect>
-        <x>380</x>
-        <y>460</y>
+        <x>255</x>
+        <y>470</y>
         <width>161</width>
         <height>23</height>
        </rect>
@@ -423,8 +413,8 @@ QWidget#editingTab{background:rgb(98, 184, 253);}
      <widget class="QComboBox" name="editLabelSelector">
       <property name="geometry">
        <rect>
-        <x>570</x>
-        <y>460</y>
+        <x>440</x>
+        <y>470</y>
         <width>75</width>
         <height>23</height>
        </rect>
@@ -501,23 +491,68 @@ QWidget#editingTab{background:rgb(98, 184, 253);}
      <widget class="QPushButton" name="editSaveButton">
       <property name="geometry">
        <rect>
-        <x>650</x>
-        <y>460</y>
+        <x>520</x>
+        <y>470</y>
         <width>75</width>
         <height>23</height>
        </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
        <string>Save</string>
       </property>
      </widget>
+     <widget class="QListWidget" name="pathList">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>231</width>
+        <height>451</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>10</y>
+        <width>401</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Left/Right arrow keys change pictures
+Up/Down arrows change label</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="editDelete">
+      <property name="geometry">
+       <rect>
+        <x>690</x>
+        <y>470</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Delete</string>
+      </property>
+     </widget>
      <zorder>labelBackground</zorder>
      <zorder>editPicDisplay</zorder>
-     <zorder>listView</zorder>
      <zorder>editPicNav</zorder>
      <zorder>editLabelSelector</zorder>
      <zorder>gridLayoutWidget</zorder>
      <zorder>editSaveButton</zorder>
+     <zorder>pathList</zorder>
+     <zorder>label_3</zorder>
+     <zorder>editDelete</zorder>
     </widget>
    </widget>
   </widget>
