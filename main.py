@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt,pyqtSignal
+from PyQt5.QtWidgets import QAction, QDesktopWidget, QShortcut, QDialog, QDialogButtonBox, QApplication, QMainWindow, QMenu, QTabWidget
 from PyQt5.QtGui import QPixmap, QImage,QKeySequence, QIcon
 from PyQt5.uic import loadUi
 from video import VideoThread
@@ -53,11 +53,40 @@ class EmotionLabeler(QMainWindow):
         self.PhotoData.set_graytoggle_state(self.GrayScaleBox.isChecked())
         config["CUSTOM"]["grayscalebox"] = str(int(self.GrayScaleBox.isChecked()))
 
+    def changeTabs(self, idx):
+
+        currentIdx = self.mainTabs.currentIndex()
+        if currentIdx == idx:
+            return
+        elif currentIdx == 0:
+            self.PhotoData.showVideoStream = False
+        elif idx == 0:
+            self.PhotoData.showVideoStream = True
+
+        self.mainTabs.setCurrentIndex(idx)
+        return
+
+
     def createMenu(self):
-        self.mainMenu = self.menuBar()
-        action = QAction("settings",self)
-        action.triggered.connect(self.openSettings)
-        self.mainMenu.addAction(action)
+        settingsAction = QAction("settings",self)
+        settingsAction.triggered.connect(self.openSettings)
+        editorTabAction = QAction("edit", self)
+        editorTabAction.triggered.connect(lambda: self.changeTabs(1))
+        captureTabAction = QAction("capture", self)
+        captureTabAction.triggered.connect(lambda: self.changeTabs(0))
+
+
+        self.mainMenu.addAction(settingsAction)
+        self.mainMenu.addAction(captureTabAction)
+        self.mainMenu.addAction(editorTabAction)
+
+    def switchTabs(self):
+        idx = self.mainTabs.currentIndex()
+        if idx == 0:
+            self.mainTabs.setCurrentIndex(1)
+        else:
+            self.mainTabs.setCurrentIndex(0)
+
 
     def saveLabeledFace(self):
         self.saver.save_current()
@@ -232,7 +261,7 @@ if __name__ == '__main__':
             config.write(configFile)
         os.kill(PID, signal.SIGTERM)
     except Exception as e:
-        with open("settings.ini", "w") as configFile:
+        with open("data/ui/settings.ini", "w") as configFile:
             config.write(configFile)
         raise(e)
 

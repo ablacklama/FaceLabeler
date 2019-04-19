@@ -96,6 +96,7 @@ class SharedPhotoData:
         self.facedims = None
         self.hasFaceImg = False
         self.showFaceBox = False
+        self.showVideoStream = True
         self.config = config
         self.detectionDelay = float(config["CUSTOM"]["detectionDelay"])
 

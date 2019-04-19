@@ -2,6 +2,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 import cv2
 from PyQt5.QtGui import QImage
 import numpy as np
+import time
 
 class VideoThread(QThread):
     changePixmap = pyqtSignal(QImage)
@@ -18,14 +19,17 @@ class VideoThread(QThread):
     def run(self):
 
         while self.isRunning:
-            ret, frame = self.cap.read()
-            if ret:
-                rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                self.PhotoData.set_photo(rgb_image)
-                if self.PhotoData.showFaceBox:
-                    rgb_image = self.display(rgb_image,self.PhotoData.facedims)
-                p = QImage(rgb_image.data, rgb_image.shape[1], rgb_image.shape[0], QImage.Format_RGB888)
-                self.changePixmap.emit(p)
+            if self.PhotoData.showVideoStream:
+                ret, frame = self.cap.read()
+                if ret:
+                    rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    self.PhotoData.set_photo(rgb_image)
+                    if self.PhotoData.showFaceBox:
+                        rgb_image = self.display(rgb_image,self.PhotoData.facedims)
+                    p = QImage(rgb_image.data, rgb_image.shape[1], rgb_image.shape[0], QImage.Format_RGB888)
+                    self.changePixmap.emit(p)
+            else:
+                time.sleep(.5)
 
     def __del__(self):
         self.cap.release()
