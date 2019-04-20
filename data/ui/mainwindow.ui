@@ -13,7 +13,7 @@
     <x>0</x>
     <y>0</y>
     <width>890</width>
-    <height>620</height>
+    <height>540</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -544,6 +544,19 @@ Up/Down arrows change label</string>
        <string>Delete</string>
       </property>
      </widget>
+     <widget class="QCheckBox" name="editResizeImageToggle">
+      <property name="geometry">
+       <rect>
+        <x>700</x>
+        <y>230</y>
+        <width>161</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Resize images for display</string>
+      </property>
+     </widget>
      <zorder>labelBackground</zorder>
      <zorder>editPicDisplay</zorder>
      <zorder>editPicNav</zorder>
@@ -553,6 +566,7 @@ Up/Down arrows change label</string>
      <zorder>pathList</zorder>
      <zorder>label_3</zorder>
      <zorder>editDelete</zorder>
+     <zorder>editResizeImageToggle</zorder>
     </widget>
    </widget>
   </widget>

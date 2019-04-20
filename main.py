@@ -21,7 +21,7 @@ class EmotionLabeler(QMainWindow):
             super().__init__()
             self.PhotoData = SharedPhotoData(config)
             self.saver = SaveData(self.PhotoData, config)
-            self.editorData = EditorData(self)
+            self.editorData = EditorData(self, config)
             self.initUI()
             self.setupSettings()
 
@@ -138,6 +138,11 @@ class EmotionLabeler(QMainWindow):
         self.setWin = settingsWindow(self)
         self.setWin.reloadsignal.connect(self.reloadSaver)
 
+    def editorResizeToggleChange(self):
+        self.editorData.resizeToFullscreen = self.editResizeImageToggle.isChecked()
+        self.editorData.reloadPicture()
+
+
     def reloadSaver(self, defaults, fromSetWin=False):
         #change files in saver
         #defaults: bool, true if we are reseting to default paths
@@ -250,8 +255,13 @@ class EmotionLabeler(QMainWindow):
         #EDITOR DELETE KEY
         self.editDelete.clicked.connect(self.editorData.deleteCurrent)
 
+        #EDITOR REZIZE IMAGES TOGGLE
+        self.editResizeImageToggle.stateChanged.connect(self.editorResizeToggleChange)
+        self.editResizeImageToggle.setChecked(bool(int(config["CUSTOM"]["editresizetofullscreen"])))
+
 
         self.show()
+
 
 
 
@@ -299,6 +309,7 @@ if __name__ == '__main__':
     except Exception as e:
         with open("data/ui/settings.ini", "w") as configFile:
             config.write(configFile)
+        handle_error(e)
         raise(e)
 
     sys.exit()

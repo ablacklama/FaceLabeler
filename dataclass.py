@@ -139,14 +139,15 @@ class SharedPhotoData:
 
 
 class EditorData:
-    def __init__(self, parent):
+    def __init__(self, parent, config):
         self.photosAndLabels = []
         self.currentIdx = -1
         self.frameWidth = 400
         self.frameHeight = 400
         self.parent = parent
-        self.resizeAll = True
+        self.resizeToFullscreen = 0
         self.listLength = 0
+        self.config = config
 
     def _init(self,imageDir, labelListPath, labelConfigPath):
         invalidPaths = showInvalidPaths([imageDir,labelListPath,labelConfigPath],
@@ -190,8 +191,21 @@ class EditorData:
             self.parent.pathList.addItem(QListWidgetItem("{} : {}".format(path,label)))
         return
 
-    def changePicture(self,newidx):
+    def reloadPicture(self):
+        self.picLabel = self.photosAndLabels[self.currentIdx]
 
+        path = os.path.join(self.imageDir, self.picLabel[0])
+        image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+        if image is not None:
+            if image.shape[0] > self.frameHeight or image.shape[1] > self.frameWidth or self.resizeToFullscreen:
+                image = cv2.resize(image, (self.frameHeight, self.frameWidth))
+
+            qimg = QImage(image.data, image.shape[1], image.shape[0],
+                          image.shape[1], QImage.Format_Grayscale8)
+            self.parent.editPicDisplay.setPixmap(QPixmap.fromImage(qimg))
+        return
+
+    def changePicture(self,newidx):
         if newidx < 0 or newidx >= len(self.photosAndLabels):
             print('no pictures?')
             return
@@ -200,7 +214,7 @@ class EditorData:
             path = os.path.join(self.imageDir,self.picLabel[0])
             image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
             if image is not None:
-                if image.shape[0] > self.frameHeight or image.shape[1] > self.frameWidth or self.resizeAll:
+                if image.shape[0] > self.frameHeight or image.shape[1] > self.frameWidth or self.resizeToFullscreen:
                     image = cv2.resize(image, (self.frameHeight, self.frameWidth))
 
                 qimg = QImage(image.data, image.shape[1], image.shape[0],

@@ -2,7 +2,8 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 import os
-
+import sys
+import traceback
 
 def handle_error(error):
     error_box = QMessageBox()
@@ -13,7 +14,8 @@ def handle_error(error):
     error_box.setInformativeText("If you think this is a bug, please report it to "
                                  "<a href=https://github.com/ablacklama/FaceLabeler/issues/new>the owner's GitHub</a>")
     error_box.setTextFormat(Qt.RichText)
-    error_box.setDetailedText(str(error))
+    traceback.print_exc(file=sys.stdout)
+    error_box.setDetailedText(str(error) + "\n\n" +  traceback.format_exc())
     error_box.setTextInteractionFlags(Qt.TextSelectableByMouse)
     error_box.exec()
 

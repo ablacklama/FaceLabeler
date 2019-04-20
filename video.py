@@ -15,6 +15,7 @@ class VideoThread(QThread):
         if self.cap is not None:
             self.cap.release()
         self.cap = cv2.VideoCapture(camera)
+        self.cap.set(cv2.CAP_PROP_AUTOFOCUS, 0)
 
     def run(self):
 
@@ -29,7 +30,7 @@ class VideoThread(QThread):
                     p = QImage(rgb_image.data, rgb_image.shape[1], rgb_image.shape[0], QImage.Format_RGB888)
                     self.changePixmap.emit(p)
             else:
-                time.sleep(.5)
+                time.sleep(.25)
 
     def __del__(self):
         self.cap.release()
