@@ -139,9 +139,10 @@ class EmotionLabeler(QMainWindow):
         self.setWin.reloadsignal.connect(self.reloadSaver)
 
     def editorResizeToggleChange(self):
-        self.editorData.resizeToFullscreen = self.editResizeImageToggle.isChecked()
+        is_checked = self.editResizeImageToggle.isChecked()
+        self.editorData.resizeToFullscreen = int(is_checked)
+        config["CUSTOM"]["editresizetofullscreen"] = str(int(is_checked))
         self.editorData.reloadPicture()
-
 
     def reloadSaver(self, defaults, fromSetWin=False):
         #change files in saver
@@ -231,7 +232,6 @@ class EmotionLabeler(QMainWindow):
 
         #EDITOR LABEL SELECTION
         self.editLabelSelector.addItems(self.saver.labels)
-        #self.editLabelSelector.currentIndexChanged.connect(self.EditLabelChange)
 
         #EDITOR PICTURE NAVIGATION
         self.picForward = lambda: self.editorData.picLeftRight(1)

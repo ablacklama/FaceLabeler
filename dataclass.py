@@ -192,6 +192,8 @@ class EditorData:
         return
 
     def reloadPicture(self):
+        if self.currentIdx < 0 or self.currentIdx >= len(self.photosAndLabels):
+            return
         self.picLabel = self.photosAndLabels[self.currentIdx]
 
         path = os.path.join(self.imageDir, self.picLabel[0])
