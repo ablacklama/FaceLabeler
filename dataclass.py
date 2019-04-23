@@ -269,11 +269,12 @@ class EditorData:
         return
 
     def deleteCurrent(self):
-        pathlabel = self.photosAndLabels[self.currentIdx]
-        path = os.path.join(self.imageDir, pathlabel[0])
-        if os.path.exists(path):
-            os.remove(path)
-        self.listLength -= 1
-        self.photosAndLabels = np.delete(self.photosAndLabels,[self.currentIdx], 0)
-        self.parent.pathList.takeItem(self.currentIdx)
-        self.currentIdx = self.parent.pathList.currentRow()
+        if len(self.photosAndLabels) > 0:
+            pathlabel = self.photosAndLabels[self.currentIdx]
+            path = os.path.join(self.imageDir, pathlabel[0])
+            if os.path.exists(path):
+                os.remove(path)
+            self.listLength -= 1
+            self.photosAndLabels = np.delete(self.photosAndLabels,[self.currentIdx], 0)
+            self.parent.pathList.takeItem(self.currentIdx)
+            self.currentIdx = self.parent.pathList.currentRow()

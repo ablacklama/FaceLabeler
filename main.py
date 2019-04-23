@@ -17,17 +17,13 @@ import configparser
 
 class EmotionLabeler(QMainWindow):
     def __init__(self):
-        try:
-            super().__init__()
-            self.PhotoData = SharedPhotoData(config)
-            self.saver = SaveData(self.PhotoData, config, self)
-            self.editorData = EditorData(self, config)
-            self.initUI()
-            self.setupSettings()
 
-        except Exception as e:
-            handle_error(e)
-            raise(e)
+        super().__init__()
+        self.PhotoData = SharedPhotoData(config)
+        self.saver = SaveData(self.PhotoData, config, self)
+        self.editorData = EditorData(self, config)
+        self.initUI()
+        self.setupSettings()
 
     def setImage(self, image):
         self.videoFeed.setPixmap(QPixmap.fromImage(image))
@@ -187,7 +183,7 @@ class EmotionLabeler(QMainWindow):
 
     def initUI(self):
         loadUi('data/ui/mainwindow_test.ui', self)
-        self.editPicDisplay = editPictureLabel(self.editingTab)
+        self.editPicDisplay = editPictureLabel(self)
 
         self.rightShortcut = QShortcut(QKeySequence("Right"), self)
         self.leftShortcut = QShortcut(QKeySequence("Left"), self)
@@ -272,8 +268,10 @@ class EmotionLabeler(QMainWindow):
         self.editResizeImageToggle.setChecked(bool(int(config["CUSTOM"]["editresizetofullscreen"])))
 
         #MAKE BOX
-        #self.makeBoxButton.clicked.connect(self.makeEditorBox)
+        self.makeBoxButton.clicked.connect(self.editPicDisplay.startPainting)
+
         #self.editPicDisplay.releaseSig.connect(self.makeEditorBox)
+
 
 
         self.show()
@@ -281,34 +279,85 @@ class EmotionLabeler(QMainWindow):
 
 
 class editPictureLabel(QLabel):
-    releaseSig = pyqtSignal(QMouseEvent)
     def __init__(self,parent):
-        QLabel.__init__(self,parent)
+        QLabel.__init__(self,parent.editingTab)
         self.move(260,50)
         self.resize(400,400)
-        self.points = None
+        self.startingPoints = []
+        self.started = False
+        self.ended = False
+        self.endingPoints = []
+        self.currentPoints = []
+        self.parent = parent
+        self.painting = False
 
     def paintEvent(self, QPaintEvent):
-        painter = QPainter(self)
-        painter.drawPixmap(self.rect(), self.pixmap())
-        print(self.points)
-        if self.points is not None:
-            pen = QPen(Qt.red, 3)
-            painter.setPen(pen)
-            painter.drawPoint(self.points[0],self.points[1])
+        if self.parent.editResizeImageToggle.isChecked() and self.pixmap() is not None:
+            painter = QPainter(self)
+            painter.drawPixmap(self.rect(), self.pixmap())
+            if len(self.startingPoints ) > 0:
+                pen = QPen(Qt.red, 3)
+                painter.setPen(pen)
+                #if self.ended:
+                #    points = (self.startingPoints[-1][0], self.startingPoints[-1][1],
+                #              self.endingPoints[-1][0] - self.startingPoints[-1][0],
+                #              self.endingPoints[-1][1] - self.startingPoints[-1][1])
+                #    painter.drawRect(*points)
+
+                if self.started and not self.ended:
+                    print(self.currentPoints, self.started, self.ended)
+
+                    points = (self.startingPoints[-1][0], self.startingPoints[-1][1],
+                              self.currentPoints[0] - self.startingPoints[-1][0],
+                              self.currentPoints[1] - self.startingPoints[-1][1])
+                    painter.drawRect(*points)
+
+
+                for start, end in zip(self.startingPoints, self.endingPoints):
+                    points = (start[0], start[1],
+                              end[0] - start[0],
+                              end[1] - start[1])
+                    painter.drawRect(*points)
+
+
+
+
+        else:
+            QLabel.paintEvent(self, QPaintEvent)
+
+    def mousePressEvent(self, QMouseEvent):
+        if self.painting:
+            self.ended = False
+            self.startingPoints.append((QMouseEvent.x(), QMouseEvent.y()))
+            print("press")
+            self.repaint()
+            self.started = True
+
+    def mouseMoveEvent(self, QMouseEvent):
+        if self.painting:
+            self.currentPoints = (QMouseEvent.x(), QMouseEvent.y())
+            print("move")
+            self.repaint()
+
 
     def mouseReleaseEvent(self, QMouseEvent):
-        self.releaseSig.emit(QMouseEvent)
-        self.points = (QMouseEvent.x(),QMouseEvent.y())
-        self.repaint()
-        self.points = None
+        if self.painting:
+            self.ended = True
+            self.started = False
+            self.endingPoints.append((QMouseEvent.x(), QMouseEvent.y()))
+            print("release")
+            self.repaint()
+            self.currentPoints = []
 
 
-    def paint(self, QMouseEvent):
-        painter = QPainter(self)
-        pen = QPen(Qt.red, 3)
-        painter.setPen(pen)
-        painter.drawPoint(QMouseEvent.x(),QMouseEvent.y())
+    def startPainting(self):
+        if len(self.parent.editorData.photosAndLabels) > 0:
+            if self.painting:
+                self.startingPoints = []
+                self.endingPoints = []
+                self.repaint()
+            self.painting = not self.painting
+
 
     def test(self):
         print("not fucked")
@@ -332,6 +381,7 @@ class settingsWindow(QDialog):
         self.imageDir.setText(self.parent.saver.imageDir)
         self.labelListPath.setText(self.parent.saver.labelListPath)
         self.labelConfigPath.setText(self.parent.saver.labelConfigPath)
+
 
     def reload(self, defaults):
         self.reloadsignal.emit(defaults, True)
