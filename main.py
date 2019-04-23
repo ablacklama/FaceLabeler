@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtCore import Qt,pyqtSignal
-from PyQt5.QtWidgets import QAction, QDesktopWidget, QShortcut, QDialog, QDialogButtonBox, QApplication, QMainWindow
-from PyQt5.QtGui import QPixmap, QImage,QKeySequence, QIcon
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 from PyQt5.uic import loadUi
 from video import VideoThread
 from dataclass import SharedPhotoData, SaveData, EditorData
@@ -55,22 +55,30 @@ class EmotionLabeler(QMainWindow):
         self.PhotoData.set_graytoggle_state(self.GrayScaleBox.isChecked())
         config["CUSTOM"]["grayscalebox"] = str(int(self.GrayScaleBox.isChecked()))
 
-    def changeTabs(self, idx, initializing=False):
+    def changeTabs(self, newIdx, initializing=False):
 
         currentIdx = self.mainTabs.currentIndex()
-        if currentIdx == idx:
+        if currentIdx == newIdx:
             return
 
         if currentIdx == 0:
             self.PhotoData.showVideoStream = False
             self.downShortcut.disconnect()
             self.upShortcut.disconnect()
-        elif idx == 0:
+
+        if currentIdx == 1 and not initializing:
+            self.downShortcut.disconnect()
+            self.upShortcut.disconnect()
+            self.rightShortcut.disconnect()
+            self.leftShortcut.disconnect()
+            self.editorData.saveCSV()
+
+        if newIdx == 0:
             self.PhotoData.showVideoStream = True
             self.downShortcut.activated.connect(lambda: self.saver.changeSelectedLabel(1))
             self.upShortcut.activated.connect(lambda: self.saver.changeSelectedLabel(-1))
 
-        if idx == 1:
+        if newIdx == 1:
             self.editorData._init(config["CUSTOM"]["imageDir"],
             config["CUSTOM"]["labelListPath"],
             config["CUSTOM"]["labelConfigPath"])
@@ -78,14 +86,9 @@ class EmotionLabeler(QMainWindow):
             self.upShortcut.activated.connect(lambda: self.editorData.changeSelectedLabel(-1))
             self.rightShortcut.activated.connect(self.picForward)
             self.leftShortcut.activated.connect(self.picBack)
-        elif currentIdx == 1 and not initializing:
-            self.downShortcut.disconnect()
-            self.upShortcut.disconnect()
-            self.rightShortcut.disconnect()
-            self.leftShortcut.disconnect()
-            self.editorData.saveCSV()
 
-        self.mainTabs.setCurrentIndex(idx)
+
+        self.mainTabs.setCurrentIndex(newIdx)
         return
 
     def createMenu(self):
@@ -148,6 +151,7 @@ class EmotionLabeler(QMainWindow):
         config["CUSTOM"]["editresizetofullscreen"] = str(int(is_checked))
         self.editorData.reloadPicture()
 
+
     def reloadSaver(self, defaults, fromSetWin=False):
         #change files in saver
         #defaults: bool, true if we are reseting to default paths
@@ -183,6 +187,7 @@ class EmotionLabeler(QMainWindow):
 
     def initUI(self):
         loadUi('data/ui/mainwindow_test.ui', self)
+        self.editPicDisplay = editPictureLabel(self.editingTab)
 
         self.rightShortcut = QShortcut(QKeySequence("Right"), self)
         self.leftShortcut = QShortcut(QKeySequence("Left"), self)
@@ -266,10 +271,47 @@ class EmotionLabeler(QMainWindow):
         self.editResizeImageToggle.stateChanged.connect(self.editorResizeToggleChange)
         self.editResizeImageToggle.setChecked(bool(int(config["CUSTOM"]["editresizetofullscreen"])))
 
+        #MAKE BOX
+        #self.makeBoxButton.clicked.connect(self.makeEditorBox)
+        #self.editPicDisplay.releaseSig.connect(self.makeEditorBox)
+
 
         self.show()
 
 
+
+class editPictureLabel(QLabel):
+    releaseSig = pyqtSignal(QMouseEvent)
+    def __init__(self,parent):
+        QLabel.__init__(self,parent)
+        self.move(260,50)
+        self.resize(400,400)
+        self.points = None
+
+    def paintEvent(self, QPaintEvent):
+        painter = QPainter(self)
+        painter.drawPixmap(self.rect(), self.pixmap())
+        print(self.points)
+        if self.points is not None:
+            pen = QPen(Qt.red, 3)
+            painter.setPen(pen)
+            painter.drawPoint(self.points[0],self.points[1])
+
+    def mouseReleaseEvent(self, QMouseEvent):
+        self.releaseSig.emit(QMouseEvent)
+        self.points = (QMouseEvent.x(),QMouseEvent.y())
+        self.repaint()
+        self.points = None
+
+
+    def paint(self, QMouseEvent):
+        painter = QPainter(self)
+        pen = QPen(Qt.red, 3)
+        painter.setPen(pen)
+        painter.drawPoint(QMouseEvent.x(),QMouseEvent.y())
+
+    def test(self):
+        print("not fucked")
 
 
 class settingsWindow(QDialog):
@@ -293,7 +335,6 @@ class settingsWindow(QDialog):
 
     def reload(self, defaults):
         self.reloadsignal.emit(defaults, True)
-
 
 
 
