@@ -10,8 +10,9 @@ from helper import showInvalidPaths
 
 
 class SaveData:
-    def __init__(self, PhotoData, config):
+    def __init__(self, PhotoData, config, parent):
         self.PhotoData = PhotoData
+        self.parent = parent
         self._init(config["CUSTOM"]["imageDir"],
             config["CUSTOM"]["labelListPath"],
             config["CUSTOM"]["labelConfigPath"])
@@ -52,6 +53,12 @@ class SaveData:
 
             if not os.path.isdir(self.imageDir):
                 os.mkdir(self.imageDir)
+
+    def changeSelectedLabel(self, addIdx):
+        idx = self.parent.LabelMenu.currentIndex()
+        idx = (idx + addIdx) % len(self.labels)
+        self.parent.LabelMenu.setCurrentIndex(idx)
+        return
 
     def get_paths(self):
         return [self.imageDir,
@@ -134,6 +141,8 @@ class SharedPhotoData:
 
     def get_graytoggle_state(self):
         return self.greyscaletoggle
+
+
 
 
 
@@ -226,6 +235,9 @@ class EditorData:
         self.parent.picLabelDisplay.setText(self.picLabel[1])
         self.parent.picPathDisplay.setText(self.picLabel[0])
         self.currentIdx = newidx
+        labelidx = self.parent.editLabelSelector.findText(self.picLabel[1])
+        if labelidx >= 0:
+            self.changeSelectedLabel(labelidx, exactIdx=True)
         return
 
     def picLeftRight(self, idxAdd):
@@ -247,10 +259,13 @@ class EditorData:
             self.changePicture(self.currentIdx)
         return
 
-    def changeSelectedLabel(self,addIdx):
-        idx = self.parent.editLabelSelector.currentIndex()
-        idx = (idx + addIdx)%len(self.labels)
-        self.parent.editLabelSelector.setCurrentIndex(idx)
+    def changeSelectedLabel(self,addIdx, exactIdx=False):
+        if not exactIdx:
+            idx = self.parent.editLabelSelector.currentIndex()
+            idx = (idx + addIdx)%len(self.labels)
+            self.parent.editLabelSelector.setCurrentIndex(idx)
+        else:
+            self.parent.editLabelSelector.setCurrentIndex(addIdx)
         return
 
     def deleteCurrent(self):

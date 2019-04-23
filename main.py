@@ -20,7 +20,7 @@ class EmotionLabeler(QMainWindow):
         try:
             super().__init__()
             self.PhotoData = SharedPhotoData(config)
-            self.saver = SaveData(self.PhotoData, config)
+            self.saver = SaveData(self.PhotoData, config, self)
             self.editorData = EditorData(self, config)
             self.initUI()
             self.setupSettings()
@@ -63,22 +63,26 @@ class EmotionLabeler(QMainWindow):
 
         if currentIdx == 0:
             self.PhotoData.showVideoStream = False
+            self.downShortcut.disconnect()
+            self.upShortcut.disconnect()
         elif idx == 0:
             self.PhotoData.showVideoStream = True
+            self.downShortcut.activated.connect(lambda: self.saver.changeSelectedLabel(1))
+            self.upShortcut.activated.connect(lambda: self.saver.changeSelectedLabel(-1))
 
         if idx == 1:
             self.editorData._init(config["CUSTOM"]["imageDir"],
             config["CUSTOM"]["labelListPath"],
             config["CUSTOM"]["labelConfigPath"])
-            self.editDownShortcut.activated.connect(lambda: self.editorData.changeSelectedLabel(1))
-            self.editUpShortcut.activated.connect(lambda: self.editorData.changeSelectedLabel(-1))
-            self.editRightShortcut.activated.connect(self.picForward)
-            self.editLeftShortcut.activated.connect(self.picBack)
+            self.downShortcut.activated.connect(lambda: self.editorData.changeSelectedLabel(1))
+            self.upShortcut.activated.connect(lambda: self.editorData.changeSelectedLabel(-1))
+            self.rightShortcut.activated.connect(self.picForward)
+            self.leftShortcut.activated.connect(self.picBack)
         elif currentIdx == 1 and not initializing:
-            self.editDownShortcut.disconnect()
-            self.editUpShortcut.disconnect()
-            self.editRightShortcut.disconnect()
-            self.editLeftShortcut.disconnect()
+            self.downShortcut.disconnect()
+            self.upShortcut.disconnect()
+            self.rightShortcut.disconnect()
+            self.leftShortcut.disconnect()
             self.editorData.saveCSV()
 
         self.mainTabs.setCurrentIndex(idx)
@@ -178,7 +182,13 @@ class EmotionLabeler(QMainWindow):
                 self.setWin.loadText()
 
     def initUI(self):
-        loadUi('data/ui/mainwindow.ui', self)
+        loadUi('data/ui/mainwindow_test.ui', self)
+
+        self.rightShortcut = QShortcut(QKeySequence("Right"), self)
+        self.leftShortcut = QShortcut(QKeySequence("Left"), self)
+        self.upShortcut = QShortcut(QKeySequence("Up"), self)
+        self.downShortcut = QShortcut(QKeySequence("Down"), self)
+
         self.changeTabs(0, initializing=True)
 
         qtRectangle = self.frameGeometry()
@@ -240,10 +250,7 @@ class EmotionLabeler(QMainWindow):
         self.editPicNav.button(QDialogButtonBox.No).setText("-->")
         self.editPicNav.button(QDialogButtonBox.Yes).clicked.connect(self.picBack)
         self.editPicNav.button(QDialogButtonBox.No).clicked.connect(self.picForward)
-        self.editRightShortcut = QShortcut(QKeySequence("Right"), self)
-        self.editLeftShortcut = QShortcut(QKeySequence("Left"), self)
-        self.editUpShortcut = QShortcut(QKeySequence("Up"), self)
-        self.editDownShortcut = QShortcut(QKeySequence("Down"), self)
+
 
         #EDITOR LABEL SAVE BUTTON
         self.editSaveButton.clicked.connect(self.editorData.saveLabel)
