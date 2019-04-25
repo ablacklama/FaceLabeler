@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtCore import Qt,pyqtSignal
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.uic import loadUi
@@ -11,6 +11,8 @@ import os
 import signal
 from helper import handle_error, showInvalidPaths
 import configparser
+from EditorUI import editPictureLabel
+from SettingsUI import settingsWindow
 
 
 
@@ -270,125 +272,8 @@ class EmotionLabeler(QMainWindow):
         #MAKE BOX
         self.makeBoxButton.clicked.connect(self.editPicDisplay.startPainting)
 
-        #self.editPicDisplay.releaseSig.connect(self.makeEditorBox)
-
-
 
         self.show()
-
-
-
-class editPictureLabel(QLabel):
-    def __init__(self,parent):
-        QLabel.__init__(self,parent.editingTab)
-        self.move(260,50)
-        self.resize(400,400)
-        self.startingPoints = []
-        self.started = False
-        self.ended = False
-        self.endingPoints = []
-        self.currentPoints = []
-        self.parent = parent
-        self.painting = False
-
-    def paintEvent(self, QPaintEvent):
-        if self.parent.editResizeImageToggle.isChecked() and self.pixmap() is not None:
-            painter = QPainter(self)
-            painter.drawPixmap(self.rect(), self.pixmap())
-            if len(self.startingPoints ) > 0:
-                pen = QPen(Qt.red, 3)
-                painter.setPen(pen)
-                #if self.ended:
-                #    points = (self.startingPoints[-1][0], self.startingPoints[-1][1],
-                #              self.endingPoints[-1][0] - self.startingPoints[-1][0],
-                #              self.endingPoints[-1][1] - self.startingPoints[-1][1])
-                #    painter.drawRect(*points)
-
-                if self.started and not self.ended:
-                    print(self.currentPoints, self.started, self.ended)
-
-                    points = (self.startingPoints[-1][0], self.startingPoints[-1][1],
-                              self.currentPoints[0] - self.startingPoints[-1][0],
-                              self.currentPoints[1] - self.startingPoints[-1][1])
-                    painter.drawRect(*points)
-
-
-                for start, end in zip(self.startingPoints, self.endingPoints):
-                    points = (start[0], start[1],
-                              end[0] - start[0],
-                              end[1] - start[1])
-                    painter.drawRect(*points)
-
-
-
-
-        else:
-            QLabel.paintEvent(self, QPaintEvent)
-
-    def mousePressEvent(self, QMouseEvent):
-        if self.painting:
-            self.ended = False
-            self.startingPoints.append((QMouseEvent.x(), QMouseEvent.y()))
-            print("press")
-            self.repaint()
-            self.started = True
-
-    def mouseMoveEvent(self, QMouseEvent):
-        if self.painting:
-            self.currentPoints = (QMouseEvent.x(), QMouseEvent.y())
-            print("move")
-            self.repaint()
-
-
-    def mouseReleaseEvent(self, QMouseEvent):
-        if self.painting:
-            self.ended = True
-            self.started = False
-            self.endingPoints.append((QMouseEvent.x(), QMouseEvent.y()))
-            print("release")
-            self.repaint()
-            self.currentPoints = []
-
-
-    def startPainting(self):
-        if len(self.parent.editorData.photosAndLabels) > 0:
-            if self.painting:
-                self.startingPoints = []
-                self.endingPoints = []
-                self.repaint()
-            self.painting = not self.painting
-
-
-    def test(self):
-        print("not fucked")
-
-
-class settingsWindow(QDialog):
-    reloadsignal = pyqtSignal(bool, bool)
-    def __init__(self, parent):
-        super(settingsWindow, self).__init__(parent)
-        self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
-        loadUi('data/ui/settings.ui',self)
-        self.setWindowIcon(QIcon("data/ui/icon.ico"))
-        self.parent = parent
-        self.loadText()
-        self.buttonArray.button(QDialogButtonBox.Discard).clicked.connect(self.loadText)
-        self.buttonArray.button(QDialogButtonBox.Save).clicked.connect(lambda: self.reload(False))
-        self.buttonArray.button(QDialogButtonBox.RestoreDefaults).clicked.connect(lambda: self.reload(True))
-
-    def loadText(self):
-        self.detectionDelay.setValue(self.parent.PhotoData.detectionDelay)
-        self.imageDir.setText(self.parent.saver.imageDir)
-        self.labelListPath.setText(self.parent.saver.labelListPath)
-        self.labelConfigPath.setText(self.parent.saver.labelConfigPath)
-
-
-    def reload(self, defaults):
-        self.reloadsignal.emit(defaults, True)
-
-
-
-
 
 
 
