@@ -31,12 +31,20 @@ class FaceDetectionThread(QThread):
                     biggestSize = size
             return [biggestFace]
 
-    def getFaceImg(self):
+    def getFaceImg(self, fullImage=False):
         if self.PhotoData.hasPhoto:
             img = self.PhotoData.get_frame()
 
             #img = cv2.flip(img, 1)
             gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+
+            if fullImage:
+                self.PhotoData.facedims = None
+                if self.PhotoData.get_graytoggle_state():
+                    faceimg = gray
+                else:
+                    faceimg = img
+                return True, faceimg
 
             faces = self.haar_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4)
             faces = self.biggerFace(faces)
@@ -58,7 +66,10 @@ class FaceDetectionThread(QThread):
 
     def run(self):
         while True:
-            if self.PhotoData.showVideoStream:
+            if self.PhotoData.get_fullimage_state():
+                self.PhotoData.set_face_image(*self.getFaceImg(fullImage=True))
+                time.sleep(.01)
+            elif self.PhotoData.showVideoStream:
                 self.PhotoData.set_face_image(*self.getFaceImg())
                 time.sleep(self.PhotoData.detectionDelay)
             else:

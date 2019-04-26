@@ -21,7 +21,7 @@ class EmotionLabeler(QMainWindow):
     def __init__(self):
 
         super().__init__()
-        self.PhotoData = SharedPhotoData(config)
+        self.PhotoData = SharedPhotoData(config, self)
         self.saver = SaveData(self.PhotoData, config, self)
         self.editorData = EditorData(self, config)
         self.initUI()

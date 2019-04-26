@@ -17,8 +17,8 @@ class SaveData:
             config["CUSTOM"]["labelListPath"],
             config["CUSTOM"]["labelConfigPath"])
 
-    def _init(self,imageDir, labelListPath, labelConfigPath):
-        invalidPaths = showInvalidPaths([imageDir,labelListPath,labelConfigPath],
+    def _init(self, imageDir, labelListPath, labelConfigPath):
+        invalidPaths = showInvalidPaths([imageDir, labelListPath, labelConfigPath],
                                         extraText="configure these in settings the app will crash\n\n")
 
         self.imageDir = imageDir
@@ -61,7 +61,7 @@ class SaveData:
         return
 
     def get_paths(self):
-        return [self.imageDir,
+        return [self.faceImgDir,
         self.labelListPath,
         self.labelConfigPath]
 
@@ -79,7 +79,7 @@ class SaveData:
                 csvFileWriter = csv.writer(csvfile, delimiter=',',
                                                 quotechar='|', quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
                 filename = "face" + str(self.imageIndex) + ".png"
-                filepath = self.imageDir + "/" + filename
+                filepath = self.faceImgDir + "/" + filename
                 cv2.imwrite(filepath,self.faceImg)
                 csvFileWriter.writerow([filename,self.currentLabel])
                 self.imageIndex += 1
@@ -95,7 +95,7 @@ class SaveData:
 
 
 class SharedPhotoData:
-    def __init__(self, config):
+    def __init__(self, config, parent):
         self.hasPhoto = False
         self.frame = None
         self.FaceImg = None
@@ -108,6 +108,8 @@ class SharedPhotoData:
         self.showVideoStream = True
         self.config = config
         self.detectionDelay = float(config["CUSTOM"]["detectionDelay"])
+        self.parent = parent
+        self.fullImage = False
 
 
     def __str__(self):
@@ -138,6 +140,9 @@ class SharedPhotoData:
 
     def set_graytoggle_state(self,state):
         self.greyscaletoggle = state
+
+    def get_fullimage_state(self):
+        return self.parent.capEntireImageBox.isChecked()
 
     def get_graytoggle_state(self):
         return self.greyscaletoggle
