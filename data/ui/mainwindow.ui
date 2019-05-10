@@ -98,7 +98,7 @@ QListView{background:rgb(255, 215, 179)}</string>
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="iconSize">
      <size>
@@ -570,12 +570,15 @@ Up/Down arrows change label</string>
         <x>700</x>
         <y>270</y>
         <width>91</width>
-        <height>31</height>
+        <height>71</height>
        </rect>
       </property>
       <property name="text">
        <string>Draw Bounding
-Boxes</string>
+Boxes
+(can draw
+but it does
+nothing)</string>
       </property>
      </widget>
      <zorder>labelBackground</zorder>
