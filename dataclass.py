@@ -61,7 +61,7 @@ class SaveData:
         return
 
     def get_paths(self):
-        return [self.faceImgDir,
+        return [self.imageDir,
         self.labelListPath,
         self.labelConfigPath]
 
@@ -79,7 +79,7 @@ class SaveData:
                 csvFileWriter = csv.writer(csvfile, delimiter=',',
                                                 quotechar='|', quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
                 filename = "face" + str(self.imageIndex) + ".png"
-                filepath = self.faceImgDir + "/" + filename
+                filepath = self.imageDir + "/" + filename
                 cv2.imwrite(filepath,self.faceImg)
                 csvFileWriter.writerow([filename,self.currentLabel])
                 self.imageIndex += 1

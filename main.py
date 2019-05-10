@@ -56,10 +56,10 @@ class EmotionLabeler(QMainWindow):
     def changeTabs(self, newIdx, initializing=False):
 
         currentIdx = self.mainTabs.currentIndex()
-        if currentIdx == newIdx:
+        if currentIdx == newIdx and not initializing:
             return
 
-        if currentIdx == 0:
+        if currentIdx == 0 and not initializing:
             self.PhotoData.showVideoStream = False
             self.downShortcut.disconnect()
             self.upShortcut.disconnect()
@@ -184,7 +184,7 @@ class EmotionLabeler(QMainWindow):
                 self.setWin.loadText()
 
     def initUI(self):
-        loadUi('data/ui/mainwindow_test.ui', self)
+        loadUi('data/ui/mainwindow.ui', self)
         self.editPicDisplay = editPictureLabel(self)
 
         self.rightShortcut = QShortcut(QKeySequence("Right"), self)

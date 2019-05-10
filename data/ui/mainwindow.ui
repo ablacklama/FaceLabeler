@@ -98,7 +98,7 @@ QListView{background:rgb(255, 215, 179)}</string>
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="iconSize">
      <size>
@@ -124,7 +124,7 @@ QListView{background:rgb(255, 215, 179)}</string>
        <rect>
         <x>670</x>
         <y>230</y>
-        <width>171</width>
+        <width>224</width>
         <height>261</height>
        </rect>
       </property>
@@ -134,7 +134,7 @@ QListView{background:rgb(255, 215, 179)}</string>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,1,0,1,1,1,1">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,1,0,0,1,1,1,1">
        <property name="spacing">
         <number>0</number>
        </property>
@@ -177,6 +177,13 @@ QListView{background:rgb(255, 215, 179)}</string>
          </property>
          <property name="text">
           <string>Show Face Detection Box</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="capEntireImageBox">
+         <property name="text">
+          <string>Capture Entire Image</string>
          </property>
         </widget>
        </item>
@@ -557,6 +564,20 @@ Up/Down arrows change label</string>
        <string>Resize images for display</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="makeBoxButton">
+      <property name="geometry">
+       <rect>
+        <x>700</x>
+        <y>270</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Draw Bounding
+Boxes</string>
+      </property>
+     </widget>
      <zorder>labelBackground</zorder>
      <zorder>editPicDisplay</zorder>
      <zorder>editPicNav</zorder>
@@ -567,6 +588,7 @@ Up/Down arrows change label</string>
      <zorder>label_3</zorder>
      <zorder>editDelete</zorder>
      <zorder>editResizeImageToggle</zorder>
+     <zorder>makeBoxButton</zorder>
     </widget>
    </widget>
   </widget>
